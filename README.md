@@ -36,10 +36,11 @@ protected:
 
   int add(int a, int b);
 
-}
+};
 ```
 
-As you can see, no test-specific code is needed in the header file.
+As you can see, no test-specific code is needed in the header file.  We just
+declare a function that we want to test.
 
 ### In `Foo.cpp` ###
 
@@ -111,7 +112,7 @@ To compile your program for testing, define `_TEST`.  For instance; using `g++`
 this would be done with a `-D_TEST` parameter.  Other compilers will have
 similar ways to do it.
 
-When `_TEST` is defined, the `TWT_RUN` macro will run all the test and *return*
+When `_TEST` is defined, the `TWT_RUN` macro will run all the tests and *return*
 from `main()`.  This way the rest of your program will not run when it has been
 compiled for testing.
 
