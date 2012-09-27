@@ -1,6 +1,6 @@
 # `twt` #
 
-> **WARNING!  This software comes with no warranty, no guarantees, and no
+> **⚠ WARNING!  This software comes with no warranty, no guarantees, and no
 > promises.  It may cause unexpected damage to your system, including, but not
 > limited to, loss and/or corruption of data.**
 
@@ -70,8 +70,8 @@ The first parameter to the macro is the class to be tested (henceforth the
 
 A few things to note about the `TEST` macro:
 
-* The macro can only be used once for each class, but that should not be a
-  problem.
+* The macro can only be used *once for each subject class*, but that should not
+  be a problem.
 
 * It is wise to keep the test code within curly braces.  This results in the
   funny-looking `})` syntax.
@@ -81,7 +81,7 @@ A few things to note about the `TEST` macro:
   output, even for successful tests.
 
 * Within the block, the `this` keyword is a pointer to an object of a class that
-  is a subclass of the subject class.  The nature of that class, sush as its
+  is a subclass of the subject class.  The nature of that class, such as its
   name, is of little interest to the test author.  What is interesting is that
   protected members (and of course public ones) are available for testing.
 
@@ -118,9 +118,10 @@ compiled for testing.
 
 When `_TEST` is *not* defined, the `TWT_RUN` and `TEST` macros do nothing,
 letting your program run as normal.  The test code is not even compiled, so that
-your binaries will not be full of unused code.  (Remember to compile testing and
-normal versions in your continuous or nightly builds to catch compilation errors
-in the test code.)
+your binaries will not be full of unused code.
+
+> ❢ Remember to compile *both* testing and normal versions in your continuous or
+> nightly builds to catch compilation errors in the test code.
 
 ## Extended Usage ##
 
