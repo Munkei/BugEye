@@ -17,6 +17,8 @@ Each test (i.e. block of test code) is meant to be written for a specific class.
 The test is run in a subclass member function environment, providing easy access
 (with `this`) to member functions and variables, including protected ones.
 
+For more information see [`twt`'s GitHub page](https://github.com/Munkei/twt).
+
 ## License ##
 
 See LICENSE.md
