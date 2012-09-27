@@ -120,8 +120,8 @@ When `_TEST` is *not* defined, the `TWT_RUN` and `TEST` macros do nothing,
 letting your program run as normal.  The test code is not even compiled, so that
 your binaries will not be full of unused code.
 
-> ♡ Remember to compile *both* testing and normal versions in your continuous or
-> nightly builds to catch compilation errors in the test code.
+> **♡** Remember to compile *both* testing and normal versions in your
+> continuous or nightly builds to catch compilation errors in the test code.
 
 ## Extended Usage ##
 
@@ -156,7 +156,7 @@ refactor is not up to you.
 
 But if you do *have* to test private members, you have a few different options:
 
-*   Use [http://en.wikipedia.org/wiki/Friend_class](`friend` classes).  You can
+*   Use [`friend` classes](http://en.wikipedia.org/wiki/Friend_class).  You can
     wrap the friend class declaration and definition in `#ifdef _TEST`:s as
     described above.
 
@@ -169,5 +169,5 @@ But if you do *have* to test private members, you have a few different options:
     `twt` is available, and you wish to use it, you'll have to merge your
     modifications, which can be a bit of a hassle.
 
-    > ♡ You'll probably want to extend the `twt::test` class and somehow add an
-    > instance to `twt::all_tests`.
+    > **♡** You'll probably want to extend the `twt::test` class and somehow add
+    > an instance to `twt::all_tests`.
