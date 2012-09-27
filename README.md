@@ -25,67 +25,83 @@ See LICENSE.md
 
 ### In `Foo.h` ###
 
-    class Foo {
+```c++
+class Foo {
 
-    ...
+...
 
-    protected:
+protected:
 
-      int add(int a, int b);
+  int add(int a, int b);
 
-    }
+}
+```
 
 As you can see, no test-specific code is needed in the header file.
 
 ### In `Foo.cpp` ###
 
-    #include <twt.h>
-    #include <assert.h>
+```c++
+#include <twt.h>
+#include <assert.h>
 
-    ...
+...
 
-    int Foo::add(int a, int b) {
-      return a + b;
-    }
+int Foo::add(int a, int b) {
+  return a + b;
+}
 
-    TEST(Foo, {
-      assert(this->add(1, 1) == 2);
-    })
+TEST(Foo, {
+  assert(this->add(1, 1) == 2);
+})
+```
 
-The test all resides in within the `TEST` macro.  This macro could appear
+#### The `TEST` Macro ####
+
+The test code all resides within the `TEST` macro.  This macro could appear
 anywhere in your code, but keeping the test code together with the class (at the
 bottom of the `.cpp` file) is a good idea.
 
-The first parameter to the macro is the class to be tested.  The macro can only
-be used once for each class, but that should not be a problem.
+The first parameter to the macro is the class to be tested (henceforth the
+"subject class"), the second parameter is the test code.
 
-The second parameter is the test code.  It is wise to keep this code within
-curly braces.  The code itself could be anything.  `twt` does *not* provide any
-assertion functions or the like.  You can use `assert()`, but you might want to
-use something that produces some kind of output, even for successful tests.
+A few things to note about the `TEST` macro:
 
-Within the block, the `this` keyword is a pointer to an object of a class that
-is a subclass of the class specified in the first macro parameter.  The nature
-of that class is of no interest to the test author.  What is interesting is that
-protected members (and of course public ones) are available for testing.
+* The macro can only be used once for each class, but that should not be a
+  problem.
 
-Private members are not accessible, but many say that if you need to unit test
-private members, then you should consider restructuring your code.
+* It is wise to keep the test code within curly braces.  This results in the
+  funny-looking `})` syntax.
+
+* `twt` does *not* provide any assertion functions or the like.  You can use
+  `assert()`, but you might want to use something that produces some kind of
+  output, even for successful tests.
+
+* Within the block, the `this` keyword is a pointer to an object of a class that
+  is a subclass of the subject class.  The nature of that class, sush as its
+  name, is of little interest to the test author.  What is interesting is that
+  protected members (and of course public ones) are available for testing.
+
+* Private members of the subject class are not accessible, but many say that if
+  you need to unit test private members, then you should consider restructuring
+  your code.
 
 ### Compiling and Running ###
 
 In your program's `main()` function, use the macro `TWT_RUN` like so:
 
-    #include <twt.h>
+```c++
+#include <twt.h>
 
-    ...
+...
 
-    int main() {
-      TWT_RUN;
+int main() {
+  TWT_RUN;
 
-      // Non-test code goes here
-      ...
-    }
+  // Non-test code goes here
+  ...
+}
+```
 
 Note the semi-colon.
 
@@ -109,10 +125,12 @@ If there is code outside of the `TEST` macros that should only be compiled when
 testing (e.g. for setting up test result logging), it can use the `_TEST`
 definition like so:
 
-    #ifdef _TEST
-       // Code for testing only
-       ...
-    #endif
+```c++
+#ifdef _TEST
+ // Code for testing only
+ ...
+#endif
+```
 
 It is *not* necessary to wrap the `TWT_RUN` and `TEST` macros, or the
 `#include <twt.h>` statement, this way.
