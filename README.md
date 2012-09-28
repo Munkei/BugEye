@@ -1,4 +1,4 @@
-# `twt` #
+# BugEye 😲 #
 
 > **⚠ WARNING!  This software comes with no warranty, no guarantees, and no
 > promises.  It may cause unexpected damage to your system, including, but not
@@ -10,14 +10,15 @@
 
 ## Description ##
 
-This is `twt`, a minimal C++ unit testing framework.  It only provides a place
+This is BugEye, a minimal C++ unit testing framework.  It only provides a place
 to put test code, and a way to make that code run.
 
 Each test (i.e. block of test code) is meant to be written for a specific class.
 The test is run in a subclass member function environment, providing easy access
 (with `this`) to member functions and variables, including protected ones.
 
-For more information see [`twt`'s GitHub page](https://github.com/Munkei/twt).
+For more information see [BugEye's GitHub
+page](https://github.com/Munkei/BugEye).
 
 ## License ##
 
@@ -45,7 +46,7 @@ declare a function that we want to test.
 ### In `Foo.cpp` ###
 
 ```c++
-#include <twt.h>
+#include <BugEye.h>
 #include <assert.h>
 
 ...
@@ -77,29 +78,30 @@ A few things to note about the `TEST` macro:
     funny-looking `})` syntax, but without them your code probably won't
     compile.
 
-*   `twt` does *not* provide any assertion functions or the like.  You can use
+*   BugEye does *not* provide any assertion functions or the like.  You can use
     `assert()`, but you might want to use something that produces some kind of
     output, even for successful tests.
 
-*   Within the block, the `this` keyword is a pointer to an object of a class that
-    is a subclass of the subject class.  The nature of that class, such as its
-    name, is of little interest to the test author.  What is interesting is that
-    protected members (and of course public ones) are available for testing.
+*   Within the block, the `this` keyword is a pointer to an object of a class
+    that is a subclass of the subject class.  The nature of that class, such as
+    its name, is of little interest to the test author.  What is interesting is
+    that protected members (and of course public ones) are available for
+    testing.
 
-*   Private members of the subject class are *not* accessible.  See below for more
-    information.
+*   Private members of the subject class are *not* accessible.  See below for
+    more information.
 
 ### Compiling and Running ###
 
-In your program's `main()` function, use the macro `TWT_RUN` like so:
+In your program's `main()` function, use the macro `BUGEYE_RUN` like so:
 
 ```c++
-#include <twt.h>
+#include <BugEye.h>
 
 ...
 
 int main() {
-  TWT_RUN;
+  BUGEYE_RUN;
 
   // Non-test code goes here
   ...
@@ -112,11 +114,11 @@ To compile your program for testing, define `_TEST`.  For instance; using `g++`
 this would be done with a `-D_TEST` parameter.  Other compilers will have
 similar ways to do it.
 
-When `_TEST` is defined, the `TWT_RUN` macro will run all the tests and *return*
-from `main()`.  This way the rest of your program will not run when it has been
-compiled for testing.
+When `_TEST` is defined, the `BUGEYE_RUN` macro will run all the tests and
+*return* from `main()`.  This way the rest of your program will not run when it
+has been compiled for testing.
 
-When `_TEST` is *not* defined, the `TWT_RUN` and `TEST` macros do nothing,
+When `_TEST` is *not* defined, the `BUGEYE_RUN` and `TEST` macros do nothing,
 letting your program run as normal.  The test code is not even compiled, so that
 your binaries will not be full of unused code.
 
@@ -136,8 +138,8 @@ definition like so:
 #endif
 ```
 
-It is *not* necessary to wrap the `TWT_RUN` and `TEST` macros, or the
-`#include <twt.h>` statement, this way.
+It is *not* necessary to wrap the `BUGEYE_RUN` and `TEST` macros, or the
+`#include <BugEye.h>` statement, this way.
 
 Conversely, if you have code that should *not* be compiled when testing simply
 substitute `#ifndef` for `#ifdef`.
@@ -148,7 +150,6 @@ than your program.
 
 ### Testing Private Members ###
 
-
 Many developers (and other know-it-alls) say that if you find yourself about to
 unit test private members (be they functions or variables), then the very
 structure of your code is wrong.  They may be right, but sometimes the choice to
@@ -156,7 +157,7 @@ refactor is not up to you.
 
 But if you do *have* to test private members, you have a few different options:
 
-*   Use [`friend` classes](http://en.wikipedia.org/wiki/Friend_class).  You can
+*   Use [friend classes](http://en.wikipedia.org/wiki/Friend_class).  You can
     wrap the friend class declaration and definition in `#ifdef _TEST`:s as
     described above.
 
@@ -165,9 +166,9 @@ But if you do *have* to test private members, you have a few different options:
     wrap the function definition and declaration in `#ifdef _TEST`:s as
     described above.
 
-*   Hacking `twt` itself.  Keep in mind, though, that whenever a new version of
-    `twt` is available, and you wish to use it, you'll have to merge your
+*   Hack BugEye itself.  Keep in mind, though, that whenever a new version of
+    BugEye is available, and you wish to use it, you'll have to merge your
     modifications, which can be a bit of a hassle.
 
-    > **♡** You'll probably want to extend the `twt::test` class and somehow add
-    > an instance to `twt::all_tests`.
+    > **♡** You'll probably want to extend the `BugEye::test` class and somehow
+    > add an instance to `BugEye::all_tests`.
