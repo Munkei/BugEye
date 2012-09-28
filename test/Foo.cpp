@@ -7,23 +7,18 @@
 #include <vector>
 
 Foo::Foo() {
-  printf("%s\n", __FUNCTION__);
 }
 
 Foo::~Foo() {
-  printf("%s\n", __FUNCTION__);
 }
 
 void Foo::public_function() {
-  printf("%s\n", __FUNCTION__);
 }
 
 void Foo::protected_function() {
-  printf("%s\n", __FUNCTION__);
 }
 
 void Foo::private_function() {
-  printf("%s\n", __FUNCTION__);
 }
 
 int main() {
@@ -43,3 +38,4 @@ TEST(Foo,
        assert(true);
      }
   )// TEST
+
