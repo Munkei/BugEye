@@ -33,121 +33,123 @@ compiling for testing.
 
 ### Functions and Macros ###
 
-*   `TEST(class subject, block code)`
+#### `TEST(class subject, block code)` ####
 
-    > **!** Only effective in test mode, otherwise does nothing.
+> **!** Only effective in test mode, otherwise does nothing.
 
-    *   `subject`
+*   `subject`
 
-        The class to be tested.
+    The class to be tested.
 
-        The macro can only be used *once for each subject class*, but that
-        should not be a problem.
+    The macro can only be used *once for each subject class*, but that should
+    not be a problem.
 
-    *   `code`
+*   `code`
 
-        The test code.
+    The test code.
 
-        It is wise to keep the test code within curly braces.  This results in
-        the funny-looking `})` syntax, but without the braces your code probably
-        won't compile.
+    It is wise to keep the test code within curly braces.  This results in the
+    funny-looking `})` syntax, but without the braces your code probably won't
+    compile.
 
-        Within the block, the `this` keyword is a pointer to an object of a
-        class that is a subclass of the subject class.  The nature of that
-        class, such as its name, is of little interest to the test author.  What
-        is interesting is that protected members (and of course public ones) are
-        available for testing.
+    Within the block, the `this` keyword is a pointer to an object of a class
+    that is a subclass of the subject class.  The nature of that class, such as
+    its name, is of little interest to the test author.  What is interesting is
+    that protected members (and of course public ones) are available for
+    testing.
 
-        Private members of the subject class are *not* accessible.  See below
-        for more information.
+    Private members of the subject class are *not* accessible.  See below for
+    more information.
 
-    This macro could appear anywhere in your code, but keeping the test code
-    together with the class (at the bottom of the `.cpp` file) is a good idea.
+This macro could appear anywhere in your code, but keeping the test code
+together with the class (at the bottom of the `.cpp` file) is a good idea.
 
-*   `ok(bool expression [, const char* message])`
+#### `ok(bool expression [, const char* message])` ####
 
-    *   `expression`
+*   `expression`
 
-        The expression to be evaluated.  If the expression resolves to `true`
-        the test passes, if it resolves to `false` the test fails.
+    The expression to be evaluated.  If the expression resolves to `true` the
+    test passes, if it resolves to `false` the test fails.
 
-    *   `message` (optional)
+*   `message` (optional)
 
-*    `pass([const char* message])`
+ `pass([const char* message])`
 
-    *   `message` (optional)
+*   `message` (optional)
 
-    Passes a single test.
+Passes a single test.
 
-*   `fail([const char* message])`
+#### `fail([const char* message])` ####
 
-    *   `message` (optional)
+*   `message` (optional)
 
-    Fails a single test.
+Fails a single test.
 
-*   `todo_begin([const char* message])`
+#### `todo_begin([const char* message])` ####
 
-    *   `message` (optional)
+*   `message` (optional)
 
-        A message describing why the following tests are ‘todo tests’.
+    A message describing why the following tests are ‘todo tests’.
 
-    Mark the following tests (until an appearance of `todo_end()`) as ‘todo
-    tests’, i.e. tests that are not yet expected to pass.
+Mark the following tests (until an appearance of `todo_end()`) as ‘todo tests’,
+i.e. tests that are not yet expected to pass.
 
-    The reason tests are not expected to pass is usually that they test parts of
-    your code that are not yet implemented.
+The reason tests are expected not to pass is usually that they test parts of
+your code that are not yet implemented.
 
-*   `todo_end()`
+#### `todo_end()` ####
 
-    End a section of ‘todo tests’.
+End a section of ‘todo tests’.
 
-*   `bail_out([const char* message])`
+#### `bail_out([const char* message])` ####
 
-    Stop testing by ‘bailing out’.
+Stop testing by ‘bailing out’.
 
-*   `BUGEYE_RUN`
+#### `BUGEYE_RUN` ####
 
-    Runs all the tests, and makes the *current function* return the number of
-    failed tests.
+> **!** Only effective in test mode, otherwise does nothing.
 
-    In your program's `main()` function, use this macro like so:
+Runs all the tests, and makes the *current function* return the number of
+failed tests.
 
-    ```c++
-    #include <BugEye.h>
+In your program's `main()` function, use this macro like so:
 
-    ...
+```c++
+#include <BugEye.h>
 
-    int main() {
-      BUGEYE_RUN;
+...
 
-      // Non-test code goes here
-      ...
-    }
-    ```
+int main() {
+  BUGEYE_RUN;
 
-    > **♡** Note the semi-colon.
+  // Non-test code goes here
+  ...
+}
+```
 
-*   `BUGEYE_SET_OUT(FILE* stream)`
+> **♡** Note the semi-colon.
 
-    > **!** Only effective in test mode, otherwise does nothing.
+#### `BUGEYE_SET_OUT(FILE* stream)` ####
 
-    *   `stream`
+> **!** Only effective in test mode, otherwise does nothing.
 
-        Whereto BugEye will print the TAP output.  The default target is
-        standard out (`stdout`), which should be fine in most cases.
+*   `stream`
 
-        If you want the output to go into a file in, say, your continuous build
-        environment, you should *consider* redirecting it externally, e.g. in
-        your build script.  This way it is still possible to build and run the
-        test executable and see the result in a terminal.
+    Whereto BugEye will print the TAP output.  The default target is
+    standard out (`stdout`), which should be fine in most cases.
 
-*   `BUGEYE_SET_VERBOSE(bool verbose)`
+    If you want the output to go into a file in, say, your continuous build
+    environment, you should *consider* redirecting it externally, e.g. in
+    your build script.  This way it is still possible to build and run the
+    test executable and see the result in a terminal.
 
-    > **!** Only effective in test mode, otherwise does nothing.
+#### `BUGEYE_SET_VERBOSE(bool verbose)` ####
 
-    *   `verbose`
+> **!** Only effective in test mode, otherwise does nothing.
 
-        Whether BugEye should produce verbose output.
+*   `verbose`
+
+    Whether BugEye should produce verbose output.
 
 ### Compiling and Running ###
 
