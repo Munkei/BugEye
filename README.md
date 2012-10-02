@@ -73,7 +73,10 @@ together with the class (at the bottom of the `.cpp` file) is a good idea.
 
 *   `message` (optional)
 
- `pass([const char* message])`
+Evaluates `expression` as a test.  The test passes if the expression evaluates
+to `true`, and fails if it evaluates to `false`.
+
+#### `pass([const char* message])` ####
 
 *   `message` (optional)
 
