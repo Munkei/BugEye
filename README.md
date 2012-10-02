@@ -255,12 +255,12 @@ But if you do *have* to test private members, you have a few different options:
 
 ## Links ##
 
-*   [http://testanything.org](TAP's homepage)
+*   [TAP's homepage](http://testanything.org)
 
-*   [https://en.wikipedia.org/wiki/Test_Anything_Protocol](The Wikipedia page on
-    TAP)
+*   [The Wikipedia page on
+    TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol)
 
-*   [https://metacpan.org/module/Test::Simple](`Test::Simple`) and
-    [https://metacpan.org/module/Test::More](`Test::More`) Perl packages (on
-    [https://metacpan.org](MetaCPAN)).  Both packages have served as inspiration
+*   [`Test::Simple`](https://metacpan.org/module/Test::Simple) and
+    [`Test::More`](https://metacpan.org/module/Test::More) Perl packages (on
+    [MetaCPAN](https://metacpan.org)).  Both packages have served as inspiration
     for, and helped in the development of, BugEye.
