@@ -1,6 +1,7 @@
 # Backup files
 *~
 *#
+*.bak
 
 *.out
 
