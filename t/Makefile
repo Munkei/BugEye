@@ -2,7 +2,7 @@ CC                = g++
 CCACHE            = ccache
 CCACHE_VERSION   := $(shell $(CCACHE) --version 2>/dev/null)
 CXX               = g++
-CXXFLAGS          = -Wall -Wextra -Werror -Wfatal-errors --std=c++11 $(addprefix -I,$(includedirs))
+CXXFLAGS          = -Wall -Wextra -Werror -Wfatal-errors -std=c++11 $(addprefix -I,$(includedirs))
 FIND              = find
 SHELL             = /bin/sh
 deps_test         = $(objects_test:%.o=%.d)
