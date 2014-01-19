@@ -1,10 +1,14 @@
 # BugEye ◉ #
 
+[![Build Status](https://travis-ci.org/Munkei/BugEye.png?branch=master)](https://travis-ci.org/Munkei/BugEye)
+
 **Copyright Theo Willows 2013**
 
 **Distributed under the Boost Software License, Version 1.0.  (See accompanying
 file `LICENSE_1_0.txt` or copy at
 [`http://www.boost.org/LICENSE_1_0.txt`](http://www.boost.org/LICENSE_1_0.txt))**
+
+---
 
 Documentation for version 2.0.0.
 
