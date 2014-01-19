@@ -1,8 +1,10 @@
-# BugEye ◉ #
+# BugEye ⦿ #
 
 [![Build Status](https://travis-ci.org/Munkei/BugEye.png?branch=master)](https://travis-ci.org/Munkei/BugEye)
 
-**Copyright Theo Willows 2013**
+---
+
+**Copyright Theo Willows 2013–2014**
 
 **Distributed under the Boost Software License, Version 1.0.  (See accompanying
 file `LICENSE_1_0.txt` or copy at
@@ -281,6 +283,13 @@ nothing, letting your program run as normal.
 > **♥** Remember to compile both testing *and* normal versions in your
 >       continuous or nightly builds to catch compilation errors in the test
 >       code.
+
+BugEye requires some C++11 features, so the compiler will have to support it.
+In the case of GCC that means version 4.7 or later, and the `-std=c++11` option.
+
+BugEye is tested to compile with GCC's `-Wall -Wextra -Werror` options, i.e. you
+shouldn't be seeing any warnings from the BugEye code.  If you do, please file a
+bug (see "Bugs" below).
 
 ### Running ###
 
