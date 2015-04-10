@@ -1,3 +1,5 @@
+/* -*- C++ -*- */
+
 // Copyright Theo Willows 2012-2014.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -13,7 +15,9 @@
 
 #pragma once
 
+/* *INDENT-OFF* */
 #define BUGEYE_VERSION 2.0.0
+/* *INDENT-ON* */
 
 #ifdef _TEST
 
@@ -40,8 +44,8 @@ namespace BugEye {
 
     public:
 
-      BailOut(const char* file,
-              const int line,
+      BailOut(const char*       file,
+              const int         line,
               const std::string message);
 
       ~BailOut();
@@ -257,7 +261,7 @@ namespace BugEye {
 
       TestHarness();
 
-      TestHarness(const TestHarness &);
+      TestHarness(const TestHarness&);
 
       void operator=(const TestHarness&);
 
@@ -272,8 +276,8 @@ namespace BugEye {
                           const int         line,
                           const std::string message)
     : file(file),
-      line(line),
-      message(message) {}
+    line(line),
+    message(message) {}
 
   inline BailOut::~BailOut() {}
 
@@ -293,15 +297,15 @@ namespace BugEye {
                               const char* file,
                               const int   line)
     : failed(false),
-      location_file(file),
-      location_line(line),
-      skip(false),
-      skip_message(),
-      tests_failed(0),
-      tests_planned(plan),
-      tests_run(0),
-      todo(false),
-      todo_message() {
+    location_file(file),
+    location_line(line),
+    skip(false),
+    skip_message(),
+    tests_failed(0),
+    tests_planned(plan),
+    tests_run(0),
+    todo(false),
+    todo_message() {
     TestHarness::get().add_group(this);
   }
 
@@ -623,7 +627,7 @@ namespace BugEye {
                               const char* file,
                               const int   line)
     : TestGroup(plan, file, line),
-      clazz(clazz) {}
+    clazz(clazz) {}
 
   inline ClassTest::~ClassTest() {}
 
@@ -636,7 +640,7 @@ namespace BugEye {
                               const char* file,
                               const int   line)
     : TestGroup(plan, file, line),
-      name(name) {}
+    name(name) {}
 
   inline NamedTest::~NamedTest() {}
 
@@ -834,6 +838,7 @@ Summary\n\
 
     return map;
   }
+
 } // namespace BugEye
 
 #  define BUGEYE_SET(KEY, VALUE) \
@@ -880,75 +885,75 @@ Summary\n\
                                                                  \
   void _BUGEYE_NAMED_TEST_##NAME::_bugeye_inner_run()
 
-#  define ok(EXPR, ...)       \
-  _bugeye_ok([&]()->bool {    \
-               return (EXPR); \
-             },               \
-             #EXPR,           \
-             __FILE__,        \
-             __LINE__,        \
+#  define ok(EXPR, ...)      \
+  _bugeye_ok([&]() -> bool { \
+    return (EXPR);           \
+  },                         \
+             #EXPR,          \
+             __FILE__,       \
+             __LINE__,       \
              __VA_ARGS__)
 
-#  define is(ACTUAL, EXPECTED, ...)                  \
-  _bugeye_is([&](std::string & actual_str,           \
-                 std::string & expected_str)->bool { \
-               std::stringstream ss;                 \
-               auto actual = (ACTUAL);               \
-               auto expected = (EXPECTED);           \
-                                                     \
-               try {                                 \
-                 ss << actual;                       \
-                 actual_str.assign(ss.str() );       \
-               }                                     \
-               catch (...) {                         \
-                 actual_str.assign(#ACTUAL);         \
-               }                                     \
-                                                     \
-               ss.str(std::string() );               \
-                                                     \
-               try {                                 \
-                 ss << expected;                     \
-                 expected_str.assign(ss.str() );     \
-               }                                     \
-               catch (...) {                         \
-                 expected_str.assign(#EXPECTED);     \
-               }                                     \
-                                                     \
-               return ( (actual) == (expected) );    \
-             },                                      \
-             __FILE__,                               \
-             __LINE__,                               \
+#  define is(ACTUAL, EXPECTED, ...)                   \
+  _bugeye_is([&](std::string& actual_str,             \
+                 std::string& expected_str) -> bool { \
+    std::stringstream ss;                             \
+    auto actual = (ACTUAL);                           \
+    auto expected = (EXPECTED);                       \
+                                                      \
+    try {                                             \
+      ss << actual;                                   \
+      actual_str.assign(ss.str() );                   \
+    }                                                 \
+    catch (...) {                                     \
+      actual_str.assign(#ACTUAL);                     \
+    }                                                 \
+                                                      \
+    ss.str(std::string() );                           \
+                                                      \
+    try {                                             \
+      ss << expected;                                 \
+      expected_str.assign(ss.str() );                 \
+    }                                                 \
+    catch (...) {                                     \
+      expected_str.assign(#EXPECTED);                 \
+    }                                                 \
+                                                      \
+    return ( (actual) == (expected) );                \
+  },                                                  \
+             __FILE__,                                \
+             __LINE__,                                \
              __VA_ARGS__)
 
-#  define isnt(ACTUAL, NOT_EXPECTED, ...)                  \
-  _bugeye_isnt([&](std::string & actual_str,               \
-                   std::string & not_expected_str)->bool { \
-                 std::stringstream ss;                     \
-                 auto actual = (ACTUAL);                   \
-                 auto not_expected = (NOT_EXPECTED);       \
-                                                           \
-                 try {                                     \
-                   ss << actual;                           \
-                   actual_str.assign(ss.str() );           \
-                 }                                         \
-                 catch (...) {                             \
-                   actual_str.assign(#ACTUAL);             \
-                 }                                         \
-                                                           \
-                 ss.str(std::string() );                   \
-                                                           \
-                 try {                                     \
-                   ss << not_expected;                     \
-                   not_expected_str.assign(ss.str() );     \
-                 }                                         \
-                 catch (...) {                             \
-                   not_expected_str.assign(#NOT_EXPECTED); \
-                 }                                         \
-                                                           \
-                 return ( (actual) != (not_expected) );    \
-               },                                          \
-               __FILE__,                                   \
-               __LINE__,                                   \
+#  define isnt(ACTUAL, NOT_EXPECTED, ...)                   \
+  _bugeye_isnt([&](std::string& actual_str,                 \
+                   std::string& not_expected_str) -> bool { \
+    std::stringstream ss;                                   \
+    auto actual = (ACTUAL);                                 \
+    auto not_expected = (NOT_EXPECTED);                     \
+                                                            \
+    try {                                                   \
+      ss << actual;                                         \
+      actual_str.assign(ss.str() );                         \
+    }                                                       \
+    catch (...) {                                           \
+      actual_str.assign(#ACTUAL);                           \
+    }                                                       \
+                                                            \
+    ss.str(std::string() );                                 \
+                                                            \
+    try {                                                   \
+      ss << not_expected;                                   \
+      not_expected_str.assign(ss.str() );                   \
+    }                                                       \
+    catch (...) {                                           \
+      not_expected_str.assign(#NOT_EXPECTED);               \
+    }                                                       \
+                                                            \
+    return ( (actual) != (not_expected) );                  \
+  },                                                        \
+               __FILE__,                                    \
+               __LINE__,                                    \
                __VA_ARGS__)
 
 #  define diag(...) \
@@ -989,6 +994,10 @@ Summary\n\
 #  define BUGEYE_SET(...)
 #  define BUGEYE_VOID(...)
 
+#  define _BUGEYE_UNUSED(...) \
+  []() {}                     \
+  (__VA_ARGS__);
+
 #  define CLASS_TEST(CLAZZ, ...)         \
   template<typename _bugeye_unused>      \
   class _BUGEYE_UNUSED_CLASS_TEST##CLAZZ \
@@ -1010,39 +1019,16 @@ Summary\n\
   template<typename _bugeye_unused>        \
   void _BUGEYE_UNUSED_NAMED_TEST_##NAME<_bugeye_unused>::_bugeye_()
 
-#  define ok(EXPR, ...) \
-  (void)(EXPR);         \
-  (void)(__VA_ARGS__)
+#  define ok(...)   _BUGEYE_UNUSED(__VA_ARGS__)
+#  define is(...)   _BUGEYE_UNUSED(__VA_ARGS__)
+#  define isnt(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define diag(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define pass(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define fail(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define skip(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define todo(...) _BUGEYE_UNUSED(__VA_ARGS__)
 
-#  define is(ACTUAL, EXPECTED, ...) \
-  (void)(ACTUAL);                   \
-  (void)(EXPECTED);                 \
-  (void)(__VA_ARGS__)
-
-#  define isnt(ACTUAL, NOT_EXPECTED, ...) \
-  (void)(ACTUAL);                         \
-  (void)(NOT_EXPECTED);                   \
-  (void)(__VA_ARGS__)
-
-#  define diag(...) \
-  (void)(__VA_ARGS__)
-
-#  define pass(...) \
-  (void)(__VA_ARGS__)
-
-#  define fail(...) \
-  (void)(__VA_ARGS__)
-
-#  define skip(CONDITION, HOWMANY, ...) \
-  (void)(HOWMANY);                      \
-  (void)(__VA_ARGS__);                  \
-  if (CONDITION)
-
-#  define todo(...)    \
-  (void)(__VA_ARGS__); \
-  if (true)
-
-#endif // #ifdef _TEST // else
+#endif // ifdef _TEST
 
 #define CLASS_TEST_NO_PLAN(CLAZZ) \
   CLASS_TEST(CLAZZ, -1)
