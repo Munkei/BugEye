@@ -1,14 +1,15 @@
-CXX           = g++
-MARKDOWN      = markdown
-SHELL         = /bin/sh
-bugeye_header = BugEye.h
-changes       = CHANGES.md
-dist          = BugEye-$(version).tar.gz
-doc_html      = $(doc_src:%.md=%.html)
-doc_src       = $(changes) $(readme)
-license       = LICENSE_1_0.txt
-readme        = README.md
-version       = $(strip $(shell echo 'BUGEYE_VERSION' | $(CXX) -x c++ -include "$(bugeye_header)" -E -P -) )
+CXX                = g++
+MARKDOWN           = markdown
+SHELL              = /bin/sh
+bugeye_header      = BugEye.h
+changes            = CHANGES.md
+dist               = BugEye-$(version).tar.gz
+doc_html           = $(doc_src:%.md=%.html)
+doc_src            = $(changes) $(readme)
+license            = LICENSE_1_0.txt
+readme             = README.md
+version            = $(strip $(shell echo 'BUGEYE_VERSION' | $(CXX) -x c++ -include "$(bugeye_header)" -E -P -) )
+statistics_exclude = .git/
 
 # Default is to check
 all : check
@@ -18,7 +19,7 @@ check : check_doc
 
 # Makes sure the documentation looks good
 check_doc :
-	grep -q "Documentation\s\+for\s\+version\s\+$(version)\." "$(readme)"
+	grep -q "Documentation for BugEye v$(version)" "$(readme)"
 	@echo "$(readme): Is for this version (\`$(version)')"
 	grep -q "^## $(version) ##$$" "$(changes)"
 	@echo "$(changes): Contains this version (\`$(version)')"
@@ -38,11 +39,14 @@ doc : check_doc html
 
 html : $(doc_html)
 
+statistics :
+	cloc $(addprefix --exclude-dir=,$(statistics_exclude)) .
+
 # Prints the version ("parsed" from the header file)
 version :
 	@echo "Version: \`$(version)'"
 
-.PHONY : all check check_doc clean dist doc version
+.PHONY : all check check_doc clean dist doc statistics version
 
 %.html : %.md
 	echo '<html>\n<title>BugEye $(version)</title>\n<body>' > "$@"
