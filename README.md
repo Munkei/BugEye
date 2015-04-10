@@ -12,19 +12,19 @@ file `LICENSE_1_0.txt` or copy at
 
 ---
 
-Documentation for version 2.0.0.
+Documentation for BugEye v2.0.0.
 
 ## Description ##
 
 This is BugEye, a minimal, non-intrusive, C++ unit testing framework.  It only
 provides three things:
 
-1.  A place to put test code, that does not interfere with the rest of your
-    code.
+1. A place to put test code, that does not interfere with the rest of your
+code.
 
-2.  A way to make all the test code run and produce output.
+2. A way to make all the test code run and produce output.
 
-3.  Functions to determine whether tests pass or fail.
+3. Functions to determine whether tests pass or fail.
 
 Test code is put in blocks.  Each block will either belong to a class, or be
 distinguished by its name.  The former have access to protected members of their
@@ -42,10 +42,10 @@ For more information see
     the repository
     ([`https://github.com/Munkei/BugEye.git`](https://github.com/Munkei/BugEye.git)).
 
-2.  Put the directory (the cloned repository or the unpacked tarball) in a good
-    place and add it to your compiler's list of include directories.
+2. Put the directory (the cloned repository or the unpacked tarball) in a good
+place and add it to your compiler's list of include directories.
 
-3.  Follow the documentation and examples below.
+3. Follow the documentation and examples below.
 
 ### Functions and Macros ###
 
@@ -54,10 +54,12 @@ compiling for testing.
 
 #### Where the Test Code Goes ####
 
-    CLASS_TEST(class, plan) { ... }
-    CLASS_TEST_NO_PLAN(class) { ... }
-    NAMED_TEST(name, plan) { ... }
-    NAMED_TEST_NO_PLAN(name) { ... }
+```cpp
+CLASS_TEST(class, plan) { ... }
+CLASS_TEST_NO_PLAN(class) { ... }
+NAMED_TEST(name, plan) { ... }
+NAMED_TEST_NO_PLAN(name) { ... }
+```
 
 > **!** Only effective in test mode, otherwise they do nothing.
 
@@ -67,17 +69,17 @@ ones.
 
 * **`subject`**
 
-    The class to be tested.
+  The class to be tested.
 
-    The macro can only be used *once for each subject class*, but that should
-    not be a problem.
+  The macro can only be used *once for each subject class*, but that should
+  not be a problem.
 
 * **`name`**
 
-    Tests that do not belong to a certain class can be put into a "named test",
-    and `name` will identify such a test.  Note that the name can not contain
-    spaces or other "special" characters (in short, it has the same restrictions
-    as class names do in C++), and that names have to be unique.
+  Tests that do not belong to a certain class can be put into a "named test",
+  and `name` will identify such a test.  Note that the name can not contain
+  spaces or other "special" characters (in short, it has the same restrictions
+  as class names do in C++), and that names have to be unique.
 
 The code within the curly brackets is the test code.
 
@@ -104,100 +106,110 @@ the standard `printf()` function for details on the formatting.
 
 * **`ok(code expression, const char* format, ...)`**
 
-    Tests whether `expression` resolves to `true`.  If it does, that's a passed
-    test, otherwise it's a failed one.
+  Tests whether `expression` resolves to `true`.  If it does, that's a passed
+  test, otherwise it's a failed one.
 
 * **`is(actual, expected, const char* format, ...)` and `isnt(actual,
   not_expected, const char* format, ...)`**
 
-    Tests whether two values (`actual` and `expected`) are equal, or not equal,
-    respectively.  Any types of values can be used, as long as they can be
-    compared with `==` or `!=`, respectively.
+  Tests whether two values (`actual` and `expected`) are equal, or not equal,
+  respectively.  Any types of values can be used, as long as they can be
+  compared with `==` or `!=`, respectively.
 
 * **`pass(const char* format, ...)`**
 
-    Passes a single test.
+  Passes a single test.
 
 * **`fail(const char* format, ...)`**
 
-    Fails a single test.
+  Fails a single test.
 
 * **`todo(const char* format, ...) { code }`**
 
-    Marks all tests within the curly brackets as "todo tests".  When such tests
-    fail they will not add to the total number of failed test.
+  Marks all tests within the curly brackets as "todo tests".  When such tests
+  fail they will not add to the total number of failed test.
 
-    The reason tests are expected not to pass is usually that they test parts of
-    your code that are not yet implemented.  The message will show up in the
-    output for each test.
+  The reason tests are expected not to pass is usually that they test parts of
+  your code that are not yet implemented.  The message will show up in the
+  output for each test.
 
-    Example:
+  Example:
 
-        CLASS_TEST(Foo, 2) {
-          ok(thing(), "thing");
+  ```cpp
+CLASS_TEST(Foo, 2) {
+  ok(thing(), "thing");
 
-          todo("Not done yet") {
-            ok(new_thing(), "new thing");
-          }
-        }
+  todo("Not done yet") {
+    ok(new_thing(), "new thing");
+  }
+}
+  ```
 
-    The above will still run the two `ok`s (so the plan is indeed 2).  The
-    latter one will fail and show up as `not ok`, but will not count as a
-    failure in the total:
+  The above will still run the two `ok`s (so the plan is indeed 2).  The
+  latter one will fail and show up as `not ok`, but will not count as a
+  failure in the total:
 
-        Test for class: Foo ..
-        1..2
-        ok 1 - thing
-        not ok 2 - new thing # TODO Not done yet
-        ok
-        Summary
-             Groups run:      1
-          Groups failed:      0
-              Tests run:      2
-           Tests failed:      0
-        Result: PASS
+  ```
+Test for class: Foo ..
+1..2
+ok 1 - thing
+not ok 2 - new thing # TODO Not done yet
+ok
+Summary
+     Groups run:      1
+  Groups failed:      0
+      Tests run:      2
+   Tests failed:      0
+Result: PASS
+  ```
 
 * **`skip(bool condition, unsigned int howmany, const char* format, ...) { code }`**
 
-    If `condition` evaluates to `true` the tests within the curly brackets are
-    skipped (in fact, the whole block is skipped, not just tests).
+  If `condition` evaluates to `true` the tests within the curly brackets are
+  skipped (in fact, the whole block is skipped, not just tests).
 
-    `howmany` should be the number of tests in the block, so that the plan will
-    stay intact.  In the output the defined number of tests will show up as
-    `ok`, with the supplied message.
+  `howmany` should be the number of tests in the block, so that the plan will
+  stay intact.  In the output the defined number of tests will show up as
+  `ok`, with the supplied message.
 
-    Useful for tests that that should only be run under certain conditions,
-    e.g. something platform specific or something that requires a certain
-    environment.
+  Useful for tests that that should only be run under certain conditions,   e.g.
+  something platform specific or something that requires a certain
+  environment.
 
-    Example:
+  Example:
 
-        CLASS_TEST(Foo, 3) {
-          ok(local(), "local");
+  ```cpp
+CLASS_TEST(Foo, 3) {
+  ok(local(), "local");
 
-          skip(!test_server_is_up(), 2, "No test server") {
-            ok(remote("foo"), "remote with foo");
-            ok(remote("bar"), "remote with bar");
-          }
-        }
+  skip(!test_server_is_up(), 2, "No test server") {
+    ok(remote("foo"), "remote with foo");
+    ok(remote("bar"), "remote with bar");
+  }
+}
+  ```
 
-    The above will produce three tests in the output, but if the test server is
-    not up, the last two will always be just `ok`:
+  The above will produce three tests in the output, but if the test server is
+  not up, the last two will always be just `ok`:
 
-        Test for class: Foo ..
-        1..3
-        ok 1 - local
-        ok 2 # SKIP No test server
-        ok 3 # SKIP No test server
-        ok
+  ```
+Test for class: Foo ..
+1..3
+ok 1 - local
+ok 2 # SKIP No test server
+ok 3 # SKIP No test server
+ok
+  ```
 
 * **`bail_out(const char* format, ...)`**
 
-    Stop testing by ‘bailing out’.
+  Stop testing by ‘bailing out’.
 
 #### Running the Tests ####
 
-    BUGEYE_RUN;
+```cpp
+BUGEYE_RUN;
+```
 
 > **!** Only effective in test mode, otherwise does nothing.
 
@@ -206,32 +218,38 @@ tests.
 
 In your program's `main()` function, use this macro like so:
 
-    #include <BugEye.h>
+```cpp
+#include <BugEye.h>
 
-    ...
+// ...
 
-    int main() {
-      BUGEYE_RUN;
+int main() {
+  BUGEYE_RUN;
 
-      // Non-test code goes here
-      ...
-    }
+  // Non-test code goes here
+  // ...
+}
+```
 
 #### Configuration ####
 
-    BUGEYE_SET(parameter, value);
+```cpp
+BUGEYE_SET(parameter, value);
+```
 
 > **!** Only effective in test mode, otherwise does nothing.
 
 To set a configuration parameter, use the `BUGEYE_SET` macro somewhere before
 the `BUGEYE_RUN` macro, e.g:
 
-    int main() {
-      BUGEYE_SET(verbosity, 2);
-      BUGEYE_RUN;
+```cpp
+int main() {
+  BUGEYE_SET(verbosity, 2);
+  BUGEYE_RUN;
 
-      ...
-    }
+  ...
+}
+```
 
 Note that setting an unknown parameter, or a known parameter with the wrong type
 of value, will *not* cause any error or feedback.  If you think a parameter
@@ -241,27 +259,27 @@ doesn't get set properly, make sure the spelling and the value type are correct.
 
 * **`out` (`FILE*`)**
 
-    Whereto BugEye will print the output.  The default target is standard out
-    (`stdout`), which should be fine in most cases.
+  Whereto BugEye will print the output.  The default target is standard out
+  (`stdout`), which should be fine in most cases.
 
-    If you want the output to go into a file in, say, your continuous build
-    environment, you should *consider* redirecting it externally, e.g. in your
-    build script.  This way it is still possible to build and run the test
-    executable and see the result in a terminal.
+  If you want the output to go into a file in, say, your continuous build
+  environment, you should *consider* redirecting it externally, e.g. in your
+  build script.  This way it is still possible to build and run the test
+  executable and see the result in a terminal.
 
-    Default:  `stdout`
+  Default:  `stdout`
 
 * **`verbosity` (`int`)**
 
-    How much BugEye should print.  A higher value means more output.
+  How much BugEye should print.  A higher value means more output.
 
-    Default:  `0`
+  Default:  `0`
 
 * **`class_prefix` (`const char*`)**
 
-    The string pre-pended to class names to make the names of their tests.
+  The string pre-pended to class names to make the names of their tests.
 
-    Default:  `"Test for class: "`
+  Default:  `"Test for class: "`
 
 ### Compiling ###
 
@@ -281,8 +299,7 @@ When `_TEST` is *not* defined, the `BUGEYE_RUN` and `..._TEST` macros do
 nothing, letting your program run as normal.
 
 > **♥** Remember to compile both testing *and* normal versions in your
->       continuous or nightly builds to catch compilation errors in the test
->       code.
+continuous or nightly builds to catch compilation errors in the test code.
 
 BugEye requires some C++11 features, so the compiler will have to support it.
 In the case of GCC that means version 4.7 or later, and the `-std=c++11` option.
@@ -306,58 +323,62 @@ document.
 
 * **0**
 
-    All test were run and they all passed.
+  All test were run and they all passed.
 
 * **1–124**
 
-    Tests were run, but some failed.  The number of failed tests is the same as
-    the exit code.
+  Tests were run, but some failed.  The number of failed tests is the same as
+  the exit code.
 
 * **125**
 
-    Tests were run, but 125 *or more* of them failed.
+  Tests were run, but 125 *or more* of them failed.
 
 * **126**
 
-    An internal error occurred.  More details should have been printed to
-    STDERR.
+  An internal error occurred.  More details should have been printed to
+  STDERR.
 
 * **Other values**
 
-    Something out of the control of BugEye.
+  Something out of the control of BugEye.
 
 ### Example ###
 
 #### In `Foo.h` ####
 
-    class Foo {
+```cpp
+class Foo {
 
-      ...
+  ...
 
-      protected:
+  protected:
 
-        int add(int a, int b);
+    int add(int a, int b);
 
-    };
+};
+```
 
 As you can see, no test-specific code is needed in the header file.  We just
 declare a function that we want to test.
 
 #### In `Foo.cpp` ####
 
-    #include <Foo.h>
+```cpp
+#include <Foo.h>
 
-    ...
+...
 
-    int Foo::add(int a, int b) {
-      return a + b;
-    }
+int Foo::add(int a, int b) {
+  return a + b;
+}
 
-    #include <BugEye.h>
+#include <BugEye.h>
 
-    CLASS_TEST(Foo, 1) {
-      is(this->add(1, 1), 2, "Adding 1 and 1");
-    }
+CLASS_TEST(Foo, 1) {
+  is(this->add(1, 1), 2, "Adding 1 and 1");
+}
+```
 
 In short, at the end of the file (or wherever you prefer) include `BugEye.h` and
 use one of the `..._TEST` macros.  Within its block, write your test code, using
@@ -416,9 +437,9 @@ But if you do *have* to test private members, you have a few different options:
   BugEye is available, and you wish to use it, you'll have to merge your
   modifications, which can be a bit of a hassle.
 
-    > **♥** You'll probably want to extend the `BugEye::TestGroup` class and
-    >       somehow add an instance to the list of groups (using
-    >       `BugEye::TestHarness::get().add_group()`).
+  > **♥** You'll probably want to extend the `BugEye::TestGroup` class and
+  somehow add an instance to the list of groups (using
+  `BugEye::TestHarness::get().add_group()`).
 
 ### Are there any examples available? ###
 
@@ -439,23 +460,23 @@ the internal testing of BugEye.  They can be found in the repository, under
 Some things that *may* be implemented in future versions:
 
 * [ ] The ability to specify which test groups to run (or not run), possibly by
-      handing the `main()` parameters to `BUGEYE_RUN` and use good old argument
-      parsing.
+  handing the `main()` parameters to `BUGEYE_RUN` and use good old argument
+  parsing.
 
-    Also, a way to list available test groups.
+  Also, a way to list available test groups.
 
 * More test helpers:
 
-    * [ ] `isa(object, class)`
+  * [ ] `isa(object, class)`
 
-    * [ ] `no_throw(code)`
+  * [ ] `no_throw(code)`
 
-    * [ ] `throws(code, typename)`
+  * [ ] `throws(code, typename)`
 
 * [ ] Put test results in one file per test group (a.k.a. archiving).
 
 * [ ] Grouped/categorised test groups, so that one can run one or more groups of
-      test groups.
+  test groups.
 
 * [ ] Coloured output.
 
@@ -475,9 +496,11 @@ If there is code outside of the `..._TEST` macros that should only be compiled
 when testing (e.g. for setting up test result logging), it can use the `_TEST`
 definition like so:
 
-    #ifdef _TEST
-    // Code for testing only
-    #endif
+```cpp
+#ifdef _TEST
+// Code for testing only
+#endif
+```
 
 It is *not* necessary to wrap the `BUGEYE_*` and `..._TEST` macros, or the
 `#include <BugEye.h>` statement, this way.
@@ -496,6 +519,6 @@ than your program.
 * [The Wikipedia page on TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol)
 
 * [prove](http://perldoc.perl.org/prove.html),
-  [`Test::Simple`](https://metacpan.org/module/Test::Simple) and
-  [`Test::More`](https://metacpan.org/module/Test::More) (from the Perl world)
-  have served as inspiration for BugEye.
+[`Test::Simple`](https://metacpan.org/module/Test::Simple) and
+[`Test::More`](https://metacpan.org/module/Test::More) (from the Perl world)
+have served as inspiration for BugEye.
