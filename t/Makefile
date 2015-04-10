@@ -1,8 +1,14 @@
-CC                = g++
 CCACHE            = ccache
 CCACHE_VERSION   := $(shell $(CCACHE) --version 2>/dev/null)
-CXX               = g++
-CXXFLAGS          = -Wall -Wextra -Werror -Wfatal-errors -std=c++11 $(addprefix -I,$(includedirs))
+CXXFLAGS         += \
+	-Wall \
+	-Wextra \
+	-Werror \
+	-Wfatal-errors \
+	-pedantic-errors \
+	$(call compiler_supports_option,-fdiagnostics-color=always) \
+	--std=c++11 \
+	$(addprefix -I,$(includedirs))
 FIND              = find
 SHELL             = /bin/sh
 deps_test         = $(objects_test:%.o=%.d)
@@ -19,9 +25,10 @@ srcs             := $(shell $(FIND) $(srcdir)/ -type f -iname '*.cpp')
 test_exe          = $(outdir)/test.exe
 wo_test_exe       = $(outdir)/wo_test.exe
 
+compiler_supports_option = $(strip $(shell echo | gcc -fsyntax-only "$(1)" -xc - 2>/dev/null && echo "$(1)" || echo ))
+
 ifdef CCACHE_VERSION
-  CC  := $(CCACHE) $(CC)
-  CXX := $(CCACHE) $(CXX)
+	CXX := $(CCACHE) $(CXX)
 endif
 
 all : check
@@ -35,7 +42,7 @@ compile : $(test_exe) $(wo_test_exe)
 
 run_test : $(test_exe)
 	$(test_exe) ; \
-  [ $$? -eq $(expected_failures) ]
+		[ $$? -eq $(expected_failures) ]
 
 run_wo_test : $(wo_test_exe)
 	$(wo_test_exe)
@@ -52,10 +59,10 @@ $(outdir_wo_test)/%.o : $(srcdir)/% | $(outdir_wo_test)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MD -MF "$(@:%.o=%.d)" -c "$<" -o "$@"
 
 $(test_exe) : $(objects_test)
-	$(CC) $(LDFLAGS) $(objects_test) $(LOADLIBES) $(LDLIBS) -o $(test_exe)
+	$(CXX) $(LDFLAGS) $(objects_test) $(LOADLIBES) $(LDLIBS) -o $(test_exe)
 
 $(wo_test_exe) : $(objects_wo_test)
-	$(CC) $(LDFLAGS) $(objects_wo_test) $(LOADLIBES) $(LDLIBS) -o $(wo_test_exe)
+	$(CXX) $(LDFLAGS) $(objects_wo_test) $(LOADLIBES) $(LDLIBS) -o $(wo_test_exe)
 
 -include $(deps_test)
 -include $(deps_wo_test)

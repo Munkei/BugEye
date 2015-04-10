@@ -1,4 +1,3 @@
-CXX                = g++
 MARKDOWN           = markdown
 SHELL              = /bin/sh
 bugeye_header      = BugEye.h
