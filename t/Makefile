@@ -14,7 +14,7 @@ SHELL             = /bin/sh
 deps_test         = $(objects_test:%.o=%.d)
 deps_wo_test      = $(objects_wo_test:%.o=%.d)
 expected_failures = 4
-includedirs       = "$(srcdir)" ..
+includedirs       = ..
 objects_test      = $(addprefix $(outdir_test)/,$(srcs:$(srcdir)/%=%.o))
 objects_wo_test   = $(addprefix $(outdir_wo_test)/,$(srcs:$(srcdir)/%=%.o))
 outdir            = out
