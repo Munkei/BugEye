@@ -5,6 +5,7 @@ compiler:
 before_script:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get -qq update
-  - sudo apt-get -qq install g++-4.7
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.7 9999
+  - sudo apt-get -qq install clang-3.4 g++-4.9
+  - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.4 9999
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 9999
 script: make
