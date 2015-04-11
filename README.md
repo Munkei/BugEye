@@ -136,13 +136,13 @@ the standard `printf()` function for details on the formatting.
   Example:
 
   ```cpp
-CLASS_TEST(Foo, 2) {
-  ok(thing(), "thing");
+  CLASS_TEST(Foo, 2) {
+    ok(thing(), "thing");
 
-  todo("Not done yet") {
-    ok(new_thing(), "new thing");
+    todo("Not done yet") {
+      ok(new_thing(), "new thing");
+    }
   }
-}
   ```
 
   The above will still run the two `ok`s (so the plan is indeed 2).  The
@@ -150,17 +150,17 @@ CLASS_TEST(Foo, 2) {
   failure in the total:
 
   ```
-Test for class: Foo ..
-1..2
-ok 1 - thing
-not ok 2 - new thing # TODO Not done yet
-ok
-Summary
-     Groups run:      1
-  Groups failed:      0
-      Tests run:      2
-   Tests failed:      0
-Result: PASS
+  Test for class: Foo ..
+  1..2
+  ok 1 - thing
+  not ok 2 - new thing # TODO Not done yet
+  ok
+  Summary
+       Groups run:      1
+    Groups failed:      0
+        Tests run:      2
+     Tests failed:      0
+  Result: PASS
   ```
 
 * **`skip(bool condition, unsigned int howmany, const char* format, ...) { code }`**
@@ -179,26 +179,26 @@ Result: PASS
   Example:
 
   ```cpp
-CLASS_TEST(Foo, 3) {
-  ok(local(), "local");
+  CLASS_TEST(Foo, 3) {
+    ok(local(), "local");
 
-  skip(!test_server_is_up(), 2, "No test server") {
-    ok(remote("foo"), "remote with foo");
-    ok(remote("bar"), "remote with bar");
+    skip(!test_server_is_up(), 2, "No test server") {
+      ok(remote("foo"), "remote with foo");
+      ok(remote("bar"), "remote with bar");
+    }
   }
-}
   ```
 
   The above will produce three tests in the output, but if the test server is
   not up, the last two will always be just `ok`:
 
-  ```
-Test for class: Foo ..
-1..3
-ok 1 - local
-ok 2 # SKIP No test server
-ok 3 # SKIP No test server
-ok
+  ```tap
+  Test for class: Foo ..
+  1..3
+  ok 1 - local
+  ok 2 # SKIP No test server
+  ok 3 # SKIP No test server
+  ok
   ```
 
 * **`bail_out(const char* format, ...)`**
