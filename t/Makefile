@@ -31,6 +31,10 @@ ifdef CCACHE_VERSION
 	CXX := $(CCACHE) $(CXX)
 endif
 
+ifneq "$(findstring clang,$(CXX))" ""
+	CXXFLAGS += -Qunused-arguments
+endif
+
 all : check
 
 check : run_test run_wo_test
