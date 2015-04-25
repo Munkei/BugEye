@@ -1,0 +1,27 @@
+tools:
+
+  Line Endings:
+    type: dos2unix
+    include:
+      - "*.cpp"
+      - "*.h"
+      - "*.txt"
+      - "*.yml"
+
+  Uncrustify:
+    type: Uncrustify
+    include:
+      - "*.cpp"
+      - "*.h"
+
+  Trailing Whitespace:
+    type: TrailingWhitespace
+    include:
+      - "*.cpp"
+      - "*.h"
+      - "*.txt"
+      - "*.yml"
+
+exclude:
+  - ".git"
+  - "/build"

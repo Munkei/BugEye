@@ -1,0 +1,26 @@
+{
+  "name": "BugEye",
+  "commands": {
+    "configure": {
+      "command": "mkdir -pv build && cd build && cmake .."
+    },
+    "build": {
+      "command": "cd build && cmake --build ."
+    },
+    "clean": {
+      "command": "rm -rvf build tags"
+    },
+    "statistics": {
+      "command": "make -C build statistics"
+    },
+    "tags": {
+      "command": "make -C build TAGS"
+    },
+    "package": {
+      "command": "make -C build package"
+    },
+    "test": {
+      "command": "cd build && ctest --extra-verbose"
+    }
+  }
+}

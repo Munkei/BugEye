@@ -1,7 +1,19 @@
 *.tar.gz
 *.html
 
-t/out/
+/build/
+/tags
+
+# CMake
+cmake_install.cmake
+CMakeCache.txt
+CMakeFiles
+install_manifest.txt
+Makefile
+
+# CTest
+CTestTestfile.cmake
+Testing
 
 *#
 *.bak

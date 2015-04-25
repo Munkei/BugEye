@@ -21,9 +21,11 @@
 
 #ifdef _TEST
 
+#  include <algorithm>
 #  include <cstdarg>
 #  include <cstdio>
 #  include <cstring>
+#  include <functional>
 #  include <map>
 #  include <memory>
 #  include <sstream>
@@ -984,6 +986,11 @@ Summary\n\
   }                                     \
   else                                  \
 
+#  define bail_out(...)      \
+  _bugeye_bail_out(__FILE__, \
+                   __LINE__, \
+                   __VA_ARGS__)
+
 #else // #ifdef _TEST
 
 /*
@@ -1019,14 +1026,15 @@ Summary\n\
   template<typename _bugeye_unused>        \
   void _BUGEYE_UNUSED_NAMED_TEST_##NAME<_bugeye_unused>::_bugeye_()
 
-#  define ok(...)   _BUGEYE_UNUSED(__VA_ARGS__)
-#  define is(...)   _BUGEYE_UNUSED(__VA_ARGS__)
-#  define isnt(...) _BUGEYE_UNUSED(__VA_ARGS__)
-#  define diag(...) _BUGEYE_UNUSED(__VA_ARGS__)
-#  define pass(...) _BUGEYE_UNUSED(__VA_ARGS__)
-#  define fail(...) _BUGEYE_UNUSED(__VA_ARGS__)
-#  define skip(...) _BUGEYE_UNUSED(__VA_ARGS__)
-#  define todo(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define ok(...)       _BUGEYE_UNUSED(__VA_ARGS__)
+#  define is(...)       _BUGEYE_UNUSED(__VA_ARGS__)
+#  define isnt(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define diag(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define pass(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define fail(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define skip(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define todo(...)     _BUGEYE_UNUSED(__VA_ARGS__)
+#  define bail_out(...) _BUGEYE_UNUSED(__VA_ARGS__)
 
 #endif // ifdef _TEST
 
