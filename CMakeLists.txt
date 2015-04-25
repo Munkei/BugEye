@@ -2,8 +2,15 @@ cmake_minimum_required( VERSION 3.0.0 )
 
 set( CMAKE_COLOR_MAKEFILE ON )
 
+include( lib/cmake/VersionFromGit/VersionFromGit.cmake )
+
+version_from_git(
+  LOG       ON
+  TIMESTAMP "%Y%m%d%H%M%S"
+)
+
 project( BugEye
-  VERSION   2.0.1
+  VERSION   ${VERSION}
   LANGUAGES CXX
 )
 
@@ -57,5 +64,5 @@ set( CPACK_PACKAGE_DESCRIPTION_FILE    "${CMAKE_CURRENT_SOURCE_DIR}/README.md"  
 set( CPACK_PACKAGE_VERSION_MAJOR       ${PROJECT_VERSION_MAJOR}                      )
 set( CPACK_PACKAGE_VERSION_MINOR       ${PROJECT_VERSION_MINOR}                      )
 set( CPACK_PACKAGE_VERSION_PATCH       ${PROJECT_VERSION_PATCH}                      )
-set( CPACK_PACKAGE_FILE_NAME           BugEye-${PROJECT_VERSION}                     )
+set( CPACK_PACKAGE_FILE_NAME           BugEye-v${SEMVER}                             )
 INCLUDE( CPack )

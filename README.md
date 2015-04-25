@@ -1,6 +1,6 @@
 # BugEye ⦿ #
 
-[![Build Status](https://travis-ci.org/Munkei/BugEye.png?branch=master)](https://travis-ci.org/Munkei/BugEye)
+[![Build Status](https://travis-ci.org/Munkei/BugEye.svg?branch=master)](https://travis-ci.org/Munkei/BugEye)
 [![Build status](https://ci.appveyor.com/api/projects/status/yv4glyv9s6evgxgr?svg=true)](https://ci.appveyor.com/project/biffen/bugeye)
 
 ---

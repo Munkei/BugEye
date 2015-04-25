@@ -1,0 +1,4 @@
+[submodule "VersionFromGit.cmake"]
+	ignore = all
+	path   = lib/cmake/VersionFromGit
+	url    = https://github.com/Munkei/VersionFromGit.cmake.git
