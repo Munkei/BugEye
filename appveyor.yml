@@ -1,0 +1,21 @@
+version: '{build}'
+
+platform:
+  - x86
+  - x64
+configuration: Debug
+
+build:
+  parallel: true
+  verbosity: detailed
+
+before_build:
+  - cmd: mkdir build
+  - cmd: cd build
+  - cmd: cmake ..
+
+test_script:
+  - cmd: cd build
+  - cmd: ctest --extra-verbose -C Debug
+
+deploy: off
