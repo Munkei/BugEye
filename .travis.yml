@@ -4,7 +4,8 @@ compiler:
   - gcc
 before_script:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository -y ppa:andykimpe/cmake3
   - sudo apt-get -qq update
-  - sudo apt-get -qq install clang-3.4 g++-4.9
+  - sudo apt-get -qq install clang-3.4 cmake3 g++-4.9
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 9999
 script: "./continuous.sh"
