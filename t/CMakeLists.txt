@@ -24,7 +24,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     add_compile_options( -Qunused-arguments )
   endif ()
 
-elseif ( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
+elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_compile_options(
     /FC     # Displays the full path of source code files passed to cl.exe in diagnostic text.
     /GR     # Enables run-time type information (RTTI).
