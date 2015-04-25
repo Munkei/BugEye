@@ -14,6 +14,10 @@ before_build:
   - cmd: cd build
   - cmd: cmake ..
 
+build_script:
+  - cmd: cd build
+  - cmd: cmake --build .
+
 test_script:
   - cmd: cd build
   - cmd: ctest --extra-verbose -C Debug
