@@ -374,14 +374,15 @@ namespace BugEye {
 
     try {
       _bugeye_inner_run();
-    } catch (const BailOut& b) {
-      throw b;
+    } catch (const BailOut&) {
+      tests_failed++;
+      throw;
     } catch (const std::exception& e) {
       TestHarness::get().printf(-1, "Caught exception: %s\n", e.what() );
-      failed = true;
+      tests_failed++;
     } catch (...) {
       TestHarness::get().printf(-1, "Caught exception\n");
-      failed = true;
+      tests_failed++;
     }
 
     if (has_plan() ) {
