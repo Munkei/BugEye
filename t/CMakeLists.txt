@@ -10,12 +10,31 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
   add_compile_options(
     -g
     -pedantic
-    -pedantic-errors
     -Wall
+    -Wcast-align
+    -Wcast-qual
+    -Wctor-dtor-privacy
     -Werror
     -Wextra
     -Wfatal-errors
+    -Wformat=2
+    -Winit-self
+    -Wlogical-op
+    -Wmissing-declarations
+    -Wmissing-include-dirs
     -Wno-error=deprecated-declarations
+    -Wnoexcept
+    -Wold-style-cast
+    -Woverloaded-virtual
+    -Wredundant-decls
+    -Wshadow
+    -Wsign-compare
+    -Wsign-conversion
+    -Wsign-promo
+    -Wstrict-null-sentinel
+    -Wstrict-overflow=5
+    -Wswitch-default
+    -Wundef
   )
 
   list( APPEND CMAKE_CXX_FLAGS --std=c++11 )

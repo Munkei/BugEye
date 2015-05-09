@@ -1,7 +1,7 @@
 *.tar.gz
 *.html
 
-/build/
+/build*
 /tags
 
 # CMake

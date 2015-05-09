@@ -34,10 +34,10 @@ CLASS_TEST(Good, 11) {
 
   is(std::string("foo"), "foo", "\"foo\" == \"foo\"");
 
-  bool        b = ( ( (void*)"secret") > (void*)0);
+  bool        b = true;
   ok(b, "The secret stuff");
   const char* x = "I hope I don't find this in the wo_test exe.";
-  diag(x);
+  diag("%s", x);
 
   pass("pass");
 

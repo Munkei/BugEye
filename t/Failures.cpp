@@ -26,7 +26,7 @@ CLASS_TEST(Failures, 4) {
 
   is( (1 + 1), 3, "1 + 1 is 3");
 
-  is("foo", "bar", "\"foo\" is \"bar\"");
+  is(std::string("foo"), "bar", "\"foo\" is \"bar\"");
 
   fail("fail");
 }
