@@ -19,11 +19,9 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wfatal-errors
     -Wformat=2
     -Winit-self
-    -Wlogical-op
     -Wmissing-declarations
     -Wmissing-include-dirs
     -Wno-error=deprecated-declarations
-    -Wnoexcept
     -Wold-style-cast
     -Woverloaded-virtual
     -Wredundant-decls
@@ -31,7 +29,6 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsign-compare
     -Wsign-conversion
     -Wsign-promo
-    -Wstrict-null-sentinel
     -Wstrict-overflow=5
     -Wswitch-default
     -Wundef
@@ -39,8 +36,19 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
 
   list( APPEND CMAKE_CXX_FLAGS --std=c++11 )
 
+  if ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
+    add_compile_options(
+      -Wlogical-op
+      -Wnoexcept
+      -Wstrict-null-sentinel
+    )
+  endif ()
+
   if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
-    add_compile_options( -Qunused-arguments )
+    add_compile_options(
+      -Qunused-arguments
+      -Wno-format-nonliteral
+    )
   endif ()
 
 elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
@@ -56,6 +64,7 @@ elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
     /D_UNICODE
+    /D_USE_ATTRIBUTES_FOR_SAL=1
     /DUNICODE
   )
 else ()

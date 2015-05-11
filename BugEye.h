@@ -31,8 +31,10 @@
 
 #  ifdef _MSC_VER
 #    define _BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
+#    define _BUGEYE_zu     "Iu"
 #  else
 #    define _BUGEYE_FORMAT
+#    define _BUGEYE_zu "zu"
 #  endif
 
 /**
@@ -48,8 +50,8 @@ namespace BugEye {
 
     public:
 
-      BailOut(const char*       file,
-              const size_t      line,
+      BailOut(const char* file,
+              const size_t line,
               const std::string message);
 
       ~BailOut();
@@ -307,7 +309,7 @@ namespace BugEye {
 
       TestHarness();
 
-      TestHarness(const TestHarness&);
+      TestHarness(const TestHarness &);
 
       void operator=(const TestHarness&);
 
@@ -322,8 +324,8 @@ namespace BugEye {
                           const size_t      line,
                           const std::string message)
     : _file(file),
-    _line(line),
-    _message(message) {}
+      _line(line),
+      _message(message) {}
 
   inline BailOut::~BailOut() {}
 
@@ -343,17 +345,17 @@ namespace BugEye {
                               const char*     file,
                               const size_t    line)
     : _failed(false),
-    _location_file(file),
-    _location_line(line),
-    _skip(false),
-    _skip_message(),
-    _tests_failed(0),
-    _tests_planned( (plan < 0)
-                    ? nullptr
-                    : new size_t(static_cast<unsigned>(plan) ) ),
-    _tests_run(0),
-    _todo(false),
-    _todo_message() {
+      _location_file(file),
+      _location_line(line),
+      _skip(false),
+      _skip_message(),
+      _tests_failed(0),
+      _tests_planned( (plan < 0)
+                      ? nullptr
+                      : new size_t(static_cast<unsigned>(plan) ) ),
+      _tests_run(0),
+      _todo(false),
+      _todo_message() {
     TestHarness::get().add_group(this);
   }
 
@@ -377,7 +379,7 @@ namespace BugEye {
 
     TestHarness::get().printf(
       ( (result || _todo) ? 1 : 0 ),
-      "%s %zu%s%s%s\n",
+      "%s %" _BUGEYE_zu "%s%s%s\n",
       // OK or not?
       ( (result) ? "ok" : "not ok" ),
       // The number of this test
@@ -417,7 +419,7 @@ namespace BugEye {
     _tests_run    = 0;
 
     if (has_plan() ) {
-      TestHarness::get().printf(1, "1..%zu\n", *_tests_planned);
+      TestHarness::get().printf(1, "1..%" _BUGEYE_zu "\n", *_tests_planned);
     }
 
     try {
@@ -438,8 +440,8 @@ namespace BugEye {
         TestHarness::get().printf(
           -1,
           "\
-# %s:%zu:\n\
-#   Looks like you planned %zu %s, but only %zu %s run\n",
+# %s:%" _BUGEYE_zu ":\n\
+#   Looks like you planned %" _BUGEYE_zu " %s, but only %" _BUGEYE_zu " %s run\n",
           _location_file.c_str(),
           _location_line,
           *_tests_planned,
@@ -451,8 +453,8 @@ namespace BugEye {
         TestHarness::get().printf(
           -1,
           "\
-# %s:%zu:\n\
-#   Looks like you only planned %zu %s, but %zu %s run\n",
+# %s:%" _BUGEYE_zu ":\n\
+#   Looks like you only planned %" _BUGEYE_zu " %s, but %" _BUGEYE_zu " %s run\n",
           _location_file.c_str(),
           _location_line,
           *_tests_planned,
@@ -463,7 +465,7 @@ namespace BugEye {
       }
     } else {
       // No plan, so print what *was* run
-      TestHarness::get().printf(1, "1..%zu\n", _tests_run);
+      TestHarness::get().printf(1, "1..%" _BUGEYE_zu "\n", _tests_run);
     }
   } // TestGroup::run
 
@@ -485,7 +487,7 @@ namespace BugEye {
       TestHarness::get().printf(
         2,
         "\
-# %s:%zu:\n\
+# %s:%" _BUGEYE_zu ":\n\
 #   Expression is false:\n\
 #     %s\n",
         file,
@@ -516,7 +518,7 @@ namespace BugEye {
       TestHarness::get().printf(
         2,
         "\
-# %s:%zu\n",
+# %s:%" _BUGEYE_zu "\n",
         file,
         line
       );
@@ -542,7 +544,7 @@ namespace BugEye {
       TestHarness::get().printf(
         2,
         "\
-# %s:%zu\n",
+# %s:%" _BUGEYE_zu "\n",
         file,
         line
       );
@@ -574,7 +576,7 @@ namespace BugEye {
       TestHarness::get().printf(
         2,
         "\
-# %s:%zu:\n\
+# %s:%" _BUGEYE_zu ":\n\
 #   Fail!\n",
         file,
         line
@@ -661,7 +663,7 @@ namespace BugEye {
                               const char*     file,
                               const size_t    line)
     : TestGroup(plan, file, line),
-    _clazz(clazz) {}
+      _clazz(clazz) {}
 
   inline ClassTest::~ClassTest() {}
 
@@ -674,7 +676,7 @@ namespace BugEye {
                               const char*     file,
                               const size_t    line)
     : TestGroup(plan, file, line),
-    _name(name) {}
+      _name(name) {}
 
   inline NamedTest::~NamedTest() {}
 
@@ -809,7 +811,7 @@ namespace BugEye {
           1,
           "\
 Bail out!  %s\n\
-# - at %s:%zu\n",
+# - at %s:%" _BUGEYE_zu "\n",
           b.get_message().c_str(),
           b.get_file().c_str(),
           b.get_line()
@@ -836,10 +838,10 @@ Bail out!  %s\n\
       1,
       "\
 Summary\n\
-     Groups run: %6zu\n\
-  Groups failed: %6zu\n\
-      Tests run: %6zu\n\
-   Tests failed: %6zu\n",
+     Groups run: %6" _BUGEYE_zu "\n\
+  Groups failed: %6" _BUGEYE_zu "\n\
+      Tests run: %6" _BUGEYE_zu "\n\
+   Tests failed: %6" _BUGEYE_zu "\n",
       groups_run,
       groups_failed,
       tests_run,
@@ -919,29 +921,29 @@ Summary\n\
                                                                  \
   void _BUGEYE_NAMED_TEST_##NAME::_bugeye_inner_run()
 
-#  define ok(EXPR, ...)      \
-  _bugeye_ok([&]() -> bool { \
-    return (EXPR);           \
-  },                         \
-             #EXPR,          \
-             __FILE__,       \
-             __LINE__,       \
+#  define ok(EXPR, ...)       \
+  _bugeye_ok([&]() -> bool {  \
+               return (EXPR); \
+             },               \
+             #EXPR,           \
+             __FILE__,        \
+             __LINE__,        \
              __VA_ARGS__)
 
-#  define is(ACTUAL, EXPECTED, ...)    \
-  _bugeye_is([&]() -> bool {           \
-    return ( (ACTUAL) == (EXPECTED) ); \
-  },                                   \
-             __FILE__,                 \
-             __LINE__,                 \
+#  define is(ACTUAL, EXPECTED, ...)               \
+  _bugeye_is([&]() -> bool {                      \
+               return ( (ACTUAL) == (EXPECTED) ); \
+             },                                   \
+             __FILE__,                            \
+             __LINE__,                            \
              __VA_ARGS__)
 
-#  define isnt(ACTUAL, NOT_EXPECTED, ...)  \
-  _bugeye_isnt([&]() -> bool {             \
-    return ( (ACTUAL) != (NOT_EXPECTED) ); \
-  },                                       \
-               __FILE__,                   \
-               __LINE__,                   \
+#  define isnt(ACTUAL, NOT_EXPECTED, ...)               \
+  _bugeye_isnt([&]() -> bool {                          \
+                 return ( (ACTUAL) != (NOT_EXPECTED) ); \
+               },                                       \
+               __FILE__,                                \
+               __LINE__,                                \
                __VA_ARGS__)
 
 #  define diag(...) \
