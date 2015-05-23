@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
+include( CheckCXXCompilerFlag )
+
 project( BugEye-tests
   LANGUAGES CXX
 )
@@ -70,6 +72,13 @@ elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
 else ()
   message( WARNING
     "Using an unsupported compiler (${CMAKE_CXX_COMPILER_ID}). Good luck!"
+  )
+endif ()
+
+check_cxx_compiler_flag( -fdiagnostics-color=always compiler_colour )
+if ( compiler_colour )
+  add_compile_options(
+    -fdiagnostics-color=always
   )
 endif ()
 
