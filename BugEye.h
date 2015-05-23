@@ -50,8 +50,8 @@ namespace BugEye {
 
     public:
 
-      BailOut(const char* file,
-              const size_t line,
+      BailOut(const std::string file,
+              const size_t      line,
               const std::string message);
 
       ~BailOut();
@@ -80,9 +80,9 @@ namespace BugEye {
 
     public:
 
-      TestGroup(const long long plan,
-                const char*     file,
-                const size_t    line);
+      TestGroup(const long long   plan,
+                const std::string file,
+                const size_t      line);
 
       virtual ~TestGroup();
 
@@ -105,34 +105,38 @@ namespace BugEye {
 
       virtual void _bugeye_inner_run() = 0;
 
-      bool         _bugeye_ok(const std::function<bool()>& expr,
-                              const char*                  expr_str,
-                              const char*                  file,
-                              const size_t                 line,
-                              _BUGEYE_FORMAT const char*   format = nullptr,
+      bool         _bugeye_ok(const bool                 expr,
+                              const std::string          expr_str,
+                              const std::string          file,
+                              const size_t               line,
+                              _BUGEYE_FORMAT const char* format = nullptr,
                               ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 6, 7) ) )
 #  endif
       ;
 
-      bool _bugeye_is(std::function<bool()>      expr,
-                      const char*                file,
+      bool _bugeye_is(const bool                 expr,
+                      const std::string          actual_str,
+                      const std::string          expected_str,
+                      const std::string          file,
                       const size_t               line,
                       _BUGEYE_FORMAT const char* format = nullptr,
                       ...)
 #  ifdef __GNUC__
-      __attribute__( (format(printf, 5, 6) ) )
+      __attribute__( (format(printf, 7, 8) ) )
 #  endif
       ;
 
-      bool _bugeye_isnt(std::function<bool()>      expr,
-                        const char*                file,
+      bool _bugeye_isnt(const bool                 expr,
+                        const std::string          actual_str,
+                        const std::string          not_expected_str,
+                        const std::string          file,
                         const size_t               line,
                         _BUGEYE_FORMAT const char* format = nullptr,
                         ...)
 #  ifdef __GNUC__
-      __attribute__( (format(printf, 5, 6) ) )
+      __attribute__( (format(printf, 7, 8) ) )
 #  endif
       ;
 
@@ -143,7 +147,7 @@ namespace BugEye {
 #  endif
       ;
 
-      void _bugeye_fail(const char*                file,
+      void _bugeye_fail(const std::string          file,
                         const size_t               line,
                         _BUGEYE_FORMAT const char* format = nullptr,
                         ...)
@@ -159,7 +163,7 @@ namespace BugEye {
 #  endif
       ;
 
-      void _bugeye_bail_out(const char*                file,
+      void _bugeye_bail_out(const std::string          file,
                             const size_t               line,
                             _BUGEYE_FORMAT const char* format = nullptr,
                             ...)
@@ -225,10 +229,10 @@ namespace BugEye {
 
     public:
 
-      ClassTest(const long long plan,
-                const char*     clazz,
-                const char*     file,
-                const size_t    line);
+      ClassTest(const long long   plan,
+                const std::string clazz,
+                const std::string file,
+                const size_t      line);
 
       virtual ~ClassTest();
 
@@ -245,10 +249,10 @@ namespace BugEye {
 
     public:
 
-      NamedTest(const long long plan,
-                const char*     name,
-                const char*     file,
-                const size_t    line);
+      NamedTest(const long long   plan,
+                const std::string name,
+                const std::string file,
+                const size_t      line);
 
       virtual ~NamedTest();
 
@@ -295,11 +299,11 @@ namespace BugEye {
       void add_group(TestGroup* group);
 
       template<typename T>
-      T config_get(const char* key);
+      T config_get(const std::string key);
 
       template<typename T>
-      void config_set(const char* key,
-                      T           value);
+      void config_set(const std::string key,
+                      T                 value);
 
       int run();
 
@@ -309,7 +313,7 @@ namespace BugEye {
 
       TestHarness();
 
-      TestHarness(const TestHarness &);
+      TestHarness(const TestHarness&);
 
       void operator=(const TestHarness&);
 
@@ -320,12 +324,12 @@ namespace BugEye {
 
   }; // class TestHarness
 
-  inline BailOut::BailOut(const char*       file,
+  inline BailOut::BailOut(const std::string file,
                           const size_t      line,
                           const std::string message)
     : _file(file),
-      _line(line),
-      _message(message) {}
+    _line(line),
+    _message(message) {}
 
   inline BailOut::~BailOut() {}
 
@@ -341,21 +345,21 @@ namespace BugEye {
     return _message;
   }
 
-  inline TestGroup::TestGroup(const long long plan,
-                              const char*     file,
-                              const size_t    line)
+  inline TestGroup::TestGroup(const long long   plan,
+                              const std::string file,
+                              const size_t      line)
     : _failed(false),
-      _location_file(file),
-      _location_line(line),
-      _skip(false),
-      _skip_message(),
-      _tests_failed(0),
-      _tests_planned( (plan < 0)
-                      ? nullptr
-                      : new size_t(static_cast<unsigned>(plan) ) ),
-      _tests_run(0),
-      _todo(false),
-      _todo_message() {
+    _location_file(file),
+    _location_line(line),
+    _skip(false),
+    _skip_message(),
+    _tests_failed(0),
+    _tests_planned( (plan < 0)
+                    ? nullptr
+                    : new size_t(static_cast<unsigned>(plan) ) ),
+    _tests_run(0),
+    _todo(false),
+    _todo_message() {
     TestHarness::get().add_group(this);
   }
 
@@ -469,20 +473,19 @@ namespace BugEye {
     }
   } // TestGroup::run
 
-  inline bool TestGroup::_bugeye_ok(const std::function<bool()>& expr,
-                                    const char*                  expr_str,
-                                    const char*                  file,
-                                    const size_t                 line,
-                                    _BUGEYE_FORMAT const char*   format,
+  inline bool TestGroup::_bugeye_ok(const bool                 expr,
+                                    const std::string          expr_str,
+                                    const std::string          file,
+                                    const size_t               line,
+                                    _BUGEYE_FORMAT const char* format,
                                     ...) {
     va_list args;
-    bool    result = expr();
 
     va_start(args, format);
-    tally(result, format, args);
+    tally(expr, format, args);
     va_end(args);
 
-    if (!result
+    if (!expr
         && !_todo) {
       TestHarness::get().printf(
         2,
@@ -490,67 +493,73 @@ namespace BugEye {
 # %s:%" _BUGEYE_zu ":\n\
 #   Expression is false:\n\
 #     %s\n",
-        file,
+        file.c_str(),
         line,
-        expr_str
+        expr_str.c_str()
       );
     }
 
-    return result;
+    return expr;
   } // TestGroup::_bugeye_ok
 
-  inline bool TestGroup::_bugeye_is(std::function<bool()>      expr,
-                                    const char*                file,
+  inline bool TestGroup::_bugeye_is(const bool                 expr,
+                                    const std::string          actual_str,
+                                    const std::string          expected_str,
+                                    const std::string          file,
                                     const size_t               line,
                                     _BUGEYE_FORMAT const char* format,
                                     ...) {
     va_list args;
 
-    // TODO unless SKIP
-    bool result = expr();
-
     va_start(args, format);
-    tally(result, format, args);
+    tally(expr, format, args);
     va_end(args);
 
-    if (!result
+    if (!expr
         && !_todo) {
       TestHarness::get().printf(
         2,
         "\
-# %s:%" _BUGEYE_zu "\n",
-        file,
-        line
+# %s:%" _BUGEYE_zu "\n\
+# Expected: %s; actual: %s\n",
+        file.c_str(),
+        line,
+        expected_str.c_str(),
+        actual_str.c_str()
       );
     }
 
-    return result;
+    return expr;
   } // _bugeye_is
 
-  inline bool TestGroup::_bugeye_isnt(std::function<bool()>      expr,
-                                      const char*                file,
+  inline bool TestGroup::_bugeye_isnt(const bool                 expr,
+                                      const std::string          actual_str,
+                                      const std::string          not_expected_str,
+                                      const std::string          file,
                                       const size_t               line,
                                       _BUGEYE_FORMAT const char* format,
                                       ...) {
     va_list args;
-    bool    result = expr();
 
     va_start(args, format);
-    tally(result, format, args);
+    tally(expr, format, args);
     va_end(args);
 
-    if (!result
+    if (!expr
         && !_todo) {
       TestHarness::get().printf(
         2,
         "\
-# %s:%" _BUGEYE_zu "\n",
-        file,
-        line
+# %s:%" _BUGEYE_zu "\n\
+# Unexpected: %s; actual: %s\n",
+        file.c_str(),
+        line,
+        not_expected_str.c_str(),
+        actual_str.c_str()
       );
     }
 
-    return result;
+    return expr;
   } // _bugeye_isnt
 
   inline void TestGroup::_bugeye_pass(_BUGEYE_FORMAT const char* format,
@@ -562,7 +571,7 @@ namespace BugEye {
     va_end(args);
   }
 
-  inline void TestGroup::_bugeye_fail(const char*                file,
+  inline void TestGroup::_bugeye_fail(const std::string          file,
                                       const size_t               line,
                                       _BUGEYE_FORMAT const char* format,
                                       ...) {
@@ -578,7 +587,7 @@ namespace BugEye {
         "\
 # %s:%" _BUGEYE_zu ":\n\
 #   Fail!\n",
-        file,
+        file.c_str(),
         line
       );
     }
@@ -598,7 +607,7 @@ namespace BugEye {
     va_end(args);
   } // _bugeye_diag
 
-  inline void TestGroup::_bugeye_bail_out(const char*                file,
+  inline void TestGroup::_bugeye_bail_out(const std::string          file,
                                           const size_t               line,
                                           _BUGEYE_FORMAT const char* format,
                                           ...) {
@@ -658,12 +667,12 @@ namespace BugEye {
     return !!_tests_planned;
   }
 
-  inline ClassTest::ClassTest(const long long plan,
-                              const char*     clazz,
-                              const char*     file,
-                              const size_t    line)
+  inline ClassTest::ClassTest(const long long   plan,
+                              const std::string clazz,
+                              const std::string file,
+                              const size_t      line)
     : TestGroup(plan, file, line),
-      _clazz(clazz) {}
+    _clazz(clazz) {}
 
   inline ClassTest::~ClassTest() {}
 
@@ -671,12 +680,12 @@ namespace BugEye {
     return TestHarness::get().config_get<std::string>("class_prefix") + _clazz;
   }
 
-  inline NamedTest::NamedTest(const long long plan,
-                              const char*     name,
-                              const char*     file,
-                              const size_t    line)
+  inline NamedTest::NamedTest(const long long   plan,
+                              const std::string name,
+                              const std::string file,
+                              const size_t      line)
     : TestGroup(plan, file, line),
-      _name(name) {}
+    _name(name) {}
 
   inline NamedTest::~NamedTest() {}
 
@@ -760,18 +769,18 @@ namespace BugEye {
   }
 
   template<typename T>
-  inline T TestHarness::config_get(const char* key) {
+  inline T TestHarness::config_get(const std::string key) {
     try {
       return config_for<T>().at(key);
     } catch (...) {
-      fprintf(stderr, "BugEye: No config value for key \"%s\"\n", key);
+      fprintf(stderr, "BugEye: No config value for key \"%s\"\n", key.c_str() );
       exit(bugeye_error);
     }
   }
 
   template<typename T>
-  inline void TestHarness::config_set(const char* key,
-                                      T           value) {
+  inline void TestHarness::config_set(const std::string key,
+                                      T                 value) {
     config_for<T>()[key] = value;
   }
 
@@ -921,30 +930,28 @@ Summary\n\
                                                                  \
   void _BUGEYE_NAMED_TEST_##NAME::_bugeye_inner_run()
 
-#  define ok(EXPR, ...)       \
-  _bugeye_ok([&]() -> bool {  \
-               return (EXPR); \
-             },               \
-             #EXPR,           \
-             __FILE__,        \
-             __LINE__,        \
+#  define ok(EXPR, ...) \
+  _bugeye_ok(EXPR,      \
+             #EXPR,     \
+             __FILE__,  \
+             __LINE__,  \
              __VA_ARGS__)
 
-#  define is(ACTUAL, EXPECTED, ...)               \
-  _bugeye_is([&]() -> bool {                      \
-               return ( (ACTUAL) == (EXPECTED) ); \
-             },                                   \
-             __FILE__,                            \
-             __LINE__,                            \
-             __VA_ARGS__)
+#  define is(ACTUAL, EXPECTED, ...)       \
+  _bugeye_is( ( (ACTUAL) == (EXPECTED) ), \
+              #ACTUAL,                    \
+              #EXPECTED,                  \
+              __FILE__,                   \
+              __LINE__,                   \
+              __VA_ARGS__)
 
-#  define isnt(ACTUAL, NOT_EXPECTED, ...)               \
-  _bugeye_isnt([&]() -> bool {                          \
-                 return ( (ACTUAL) != (NOT_EXPECTED) ); \
-               },                                       \
-               __FILE__,                                \
-               __LINE__,                                \
-               __VA_ARGS__)
+#  define isnt(ACTUAL, NOT_EXPECTED, ...)   \
+  _bugeye_isnt( ( (ACTUAL) != (EXPECTED) ), \
+                #ACTUAL,                    \
+                #NOT_EXPECTED,              \
+                __FILE__,                   \
+                __LINE__,                   \
+                __VA_ARGS__)
 
 #  define diag(...) \
   _bugeye_diag(__VA_ARGS__)
