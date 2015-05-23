@@ -15,7 +15,23 @@ This is BugEye, a minimal, non-intrusive, C++ unit testing framework.
 For the full documentation, see the README file or
 [BugEye's GitHub page](https://github.com/Munkei/BugEye).
 
-## 2.0.0 ##
+## v2.0.1 ##
+
+* 🐛 Bailouts and uncaught exceptions sometimes weren't counted as failures,
+  which could lead to false positives.  They will now *always* lead to   a
+  non-zero exit.
+
+* 🐛 ‘Consumed’ objects during stringification has been fixed.  Stringification
+  now works somewhat differently.  It's dumber, but less dangerous.  Expect it
+  to be better in a minor release in the near future.
+
+* Messages for all tests are now optional (but a missing message *may* produce a
+  compiler warning).
+
+* 🏗 A lot of compiler warnings have been fixed.  (BugEye now builds with even
+  stricter settings.)
+
+## v2.0.0 ##
 
 A lot of improvements, and some new features:
 
@@ -29,6 +45,6 @@ A lot of improvements, and some new features:
 
 * Increased compatibility with different subject classes.
 
-## 0.1.0 ##
+## v0.1.0 ##
 
 Initial version.

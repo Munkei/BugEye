@@ -13,8 +13,6 @@ file `LICENSE_1_0.txt` or copy at
 
 ---
 
-Documentation for BugEye v2.0.0.
-
 ## Description ##
 
 This is BugEye, a minimal, non-intrusive, C++ unit testing framework.  It only
