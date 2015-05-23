@@ -52,8 +52,9 @@ endif ()
 install(
   FILES
     BugEye.h
-    README.md
+    CHANGES.md
     LICENSE_1_0.txt
+    README.md
   DESTINATION .
 )
 
