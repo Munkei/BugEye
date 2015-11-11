@@ -15,14 +15,15 @@ Makefile
 CTestTestfile.cmake
 Testing
 
-*#
-*.bak
-*~
+._*
 .DS_Store
 .DS_Store?
 .Spotlight-V100
 .Trashes
-._*
+*.bak
+*.gch
+*#
+*~
+ehthumbs.db
 Icon?
 Thumbs.db
-ehthumbs.db

@@ -22,6 +22,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wformat=2
     -Winit-self
     -Wmissing-declarations
+    -Wmissing-format-attribute
     -Wmissing-include-dirs
     -Wno-error=deprecated-declarations
     -Wold-style-cast
@@ -32,6 +33,10 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsign-conversion
     -Wsign-promo
     -Wstrict-overflow=5
+    -Wsuggest-attribute=const
+    -Wsuggest-attribute=format
+    # -Wsuggest-attribute=noreturn
+    -Wsuggest-attribute=pure
     -Wswitch-default
     -Wundef
   )
@@ -89,6 +94,7 @@ include_directories(
 ################################################################################
 
 add_executable( good
+  ../BugEye.h
   Good.cpp
   GoodNoPlan.cpp
   main.cpp
@@ -105,6 +111,7 @@ add_test(
 ################################################################################
 
 add_executable( bad
+  ../BugEye.h
   Failures.cpp
   main.cpp
   TooFew.cpp
@@ -125,6 +132,7 @@ set_tests_properties( bad
 ################################################################################
 
 add_executable( bailout
+  ../BugEye.h
   BailOut.cpp
   main.cpp
 )
@@ -143,6 +151,7 @@ set_tests_properties( bailout
 ################################################################################
 
 add_executable( exception
+  ../BugEye.h
   Exception.cpp
   main.cpp
 )
@@ -161,6 +170,7 @@ set_tests_properties( exception
 ################################################################################
 
 add_executable( notests
+  ../BugEye.h
   main.cpp
 )
 

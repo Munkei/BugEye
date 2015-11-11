@@ -200,7 +200,11 @@ namespace BugEye {
 
       void tally(bool                       result,
                  _BUGEYE_FORMAT const char* format,
-                 va_list                    args);
+                 va_list                    args)
+#  ifdef __GNUC__
+      __attribute__( (format(printf, 3, 0) ) )
+#  endif
+      ;
 
       bool                    _failed;
 
@@ -280,7 +284,11 @@ namespace BugEye {
       ;
 
       static std::string vstringf(_BUGEYE_FORMAT const char* format,
-                                  va_list                    args);
+                                  va_list                    args)
+#  ifdef __GNUC__
+      __attribute__( (format(printf, 1, 0) ) )
+#  endif
+      ;
 
       ~TestHarness();
 
@@ -294,7 +302,11 @@ namespace BugEye {
 
       bool vprintf(const int                  level,
                    _BUGEYE_FORMAT const char* format,
-                   va_list                    args);
+                   va_list                    args)
+#  ifdef __GNUC__
+      __attribute__( (format(printf, 3, 0) ) )
+#  endif
+      ;
 
       void add_group(TestGroup* group);
 
