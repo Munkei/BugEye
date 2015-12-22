@@ -3,12 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <BugEye.h>
+#include <BugEye3.h>
 
-NAMED_TEST(Named_Test, 1) {
-  ok(true, "ok");
-}
-
-NAMED_TEST_NO_PLAN(Named_Test_2) {
-  ok(true, "ok");
-}
+static auto t = bugeye::test("BailOut") = [] {
+  bail_out("Testing bailing out");
+};

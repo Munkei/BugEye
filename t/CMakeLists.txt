@@ -2,13 +2,9 @@ cmake_minimum_required( VERSION 3.0.0 )
 
 include( CheckCXXCompilerFlag )
 
-project( BugEye-tests
-  LANGUAGES CXX
-)
-
 set( CMAKE_VERBOSE_MAKEFILE ON )
 
-if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
   add_compile_options(
     -g
     -pedantic
@@ -18,7 +14,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wctor-dtor-privacy
     -Werror
     -Wextra
-    -Wfatal-errors
+    # -Wfatal-errors
     -Wformat=2
     -Winit-self
     -Wmissing-declarations
@@ -35,38 +31,36 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wstrict-overflow=5
     -Wsuggest-attribute=const
     -Wsuggest-attribute=format
-    # -Wsuggest-attribute=noreturn
+    -Wsuggest-attribute=noreturn
     -Wsuggest-attribute=pure
     -Wswitch-default
     -Wundef
   )
 
-  list( APPEND CMAKE_CXX_FLAGS --std=c++11 )
-
-  if ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
+  if( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
     add_compile_options(
       -Wlogical-op
       -Wnoexcept
       -Wstrict-null-sentinel
     )
-  endif ()
+  endif()
 
-  if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+  if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
     add_compile_options(
       -Qunused-arguments
       -Wno-format-nonliteral
     )
-  endif ()
+  endif()
 
-elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_compile_options(
-    /FC     # Displays the full path of source code files passed to cl.exe in diagnostic text.
-    /GR     # Enables run-time type information (RTTI).
-    /MP     # Builds multiple source files concurrently.
+    /FC # Displays the full path of source code files passed to cl.exe in diagnostic text.
+    /GR # Enables run-time type information (RTTI).
+    /MP # Builds multiple source files concurrently.
     /W4
     /WX
-    /Za     # Disables language extensions.
-    /Zi     # Generates complete debugging information.
+    /Za # Disables language extensions.
+    /Zi # Generates complete debugging information.
   )
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
@@ -74,111 +68,28 @@ elseif ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     /D_USE_ATTRIBUTES_FOR_SAL=1
     /DUNICODE
   )
-else ()
+else()
   message( WARNING
     "Using an unsupported compiler (${CMAKE_CXX_COMPILER_ID}). Good luck!"
   )
-endif ()
+endif()
 
 check_cxx_compiler_flag( -fdiagnostics-color=always compiler_colour )
-if ( compiler_colour )
+if( compiler_colour )
   add_compile_options(
     -fdiagnostics-color=always
   )
-endif ()
+endif()
+
+add_definitions( -D_TEST )
 
 include_directories(
   ..
 )
 
-################################################################################
+add_subdirectory( notests   )
 
-add_executable( good
-  ../BugEye.h
-  Good.cpp
-  GoodNoPlan.cpp
-  main.cpp
-  Named.cpp
-)
-
-target_compile_definitions( good PUBLIC _TEST )
-
-add_test(
-  NAME    good
-  COMMAND good
-)
-
-################################################################################
-
-add_executable( bad
-  ../BugEye.h
-  Failures.cpp
-  main.cpp
-  TooFew.cpp
-  TooMany.cpp
-)
-
-target_compile_definitions( bad PUBLIC _TEST )
-
-add_test(
-  NAME    bad
-  COMMAND bad
-)
-
-set_tests_properties( bad
-  PROPERTIES WILL_FAIL YES
-)
-
-################################################################################
-
-add_executable( bailout
-  ../BugEye.h
-  BailOut.cpp
-  main.cpp
-)
-
-target_compile_definitions( bailout PUBLIC _TEST )
-
-add_test(
-  NAME    bailout
-  COMMAND bailout
-)
-
-set_tests_properties( bailout
-  PROPERTIES WILL_FAIL YES
-)
-
-################################################################################
-
-add_executable( exception
-  ../BugEye.h
-  Exception.cpp
-  main.cpp
-)
-
-target_compile_definitions( exception PUBLIC _TEST )
-
-add_test(
-  NAME    exception
-  COMMAND exception
-)
-
-set_tests_properties( exception
-  PROPERTIES WILL_FAIL YES
-)
-
-################################################################################
-
-add_executable( notests
-  ../BugEye.h
-  main.cpp
-)
-
-add_test(
-  NAME    notests
-  COMMAND notests
-)
-
-set_tests_properties( notests
-  PROPERTIES PASS_REGULAR_EXPRESSION "This is the code that runs when we're not testing"
-)
+add_subdirectory( bad       )
+add_subdirectory( bailout   )
+add_subdirectory( exception )
+add_subdirectory( good      )

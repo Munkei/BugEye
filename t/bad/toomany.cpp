@@ -3,8 +3,12 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <BugEye.h>
+#include <BugEye3.h>
 
-NAMED_TEST_NO_PLAN(BailOut) {
-  bail_out("Testing bailing out");
-}
+static auto t
+      = bugeye::test("Too Many").plan(1)
+      = []() {
+          for (size_t i = 0; i < 3; ++i) {
+            ok(true);
+          }
+        };

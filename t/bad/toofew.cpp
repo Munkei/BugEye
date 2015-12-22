@@ -3,8 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <BugEye.h>
+#include <BugEye3.h>
 
-NAMED_TEST_NO_PLAN(Exception) {
-  throw std::runtime_error("Testing throwing an exception");
-}
+static auto t = bugeye::test("Too Few").plan(100) = [] {
+  ok(true, "asdf");
+};

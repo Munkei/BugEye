@@ -3,10 +3,8 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "TooFew.h"
+#include <BugEye3.h>
 
-#include <BugEye.h>
-
-CLASS_TEST(TooFew, 100) {
-  ok(true, "asdf");
-}
+static auto t = bugeye::test("Good No Plan") = [] {
+  ok(true, "ok (true)");
+};

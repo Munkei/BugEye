@@ -3,17 +3,15 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#ifdef _MSC_VER
-#  pragma warning(disable : 4702)
-#endif
+#include <iostream>
 
-#include <BugEye.h>
+#include <BugEye3.h>
 
-#include <cstdio>
+int main(int         argc,
+         char const* argv[]) {
+  bugeye::run(argc, argv);
 
-int main() {
-  BUGEYE_SET(verbosity, 2);
-  BUGEYE_RUN;
+  std::cout << "This is the code that runs when we're not testing" << std::endl;
 
-  printf("This is the code that runs when we're not testing\n");
+  return 0;
 }

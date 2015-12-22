@@ -3,24 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#pragma once
+#include <stdexcept>
 
-class Failures {
+#include <BugEye3.h>
 
-  public:
-
-    Failures();
-
-    ~Failures();
-
-    void public_function();
-
-  protected:
-
-    void protected_function();
-
-  private:
-
-    void private_function();
-
+static auto t = bugeye::test("Exception") = [] {
+  throw std::runtime_error("Testing throwing an exception");
 };
