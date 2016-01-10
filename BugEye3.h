@@ -331,7 +331,10 @@ namespace bugeye {
           !=
           std::declval<
             decltype(std::end(std::declval<U>() ) )
-          >(),
+          >()
+          // Older versions of Clang complain about ‘inequality comparison
+          // result unused’ witout the following line 😒
+          ? 0 : 0,
           std::true_type()
         );
 
