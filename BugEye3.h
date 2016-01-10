@@ -1180,10 +1180,10 @@ inline std::string bugeye::util::stringify(const value_t& value) {
       >::type
     >::type
   >::type
-  stringifier_instance;
+  stringifier_instance {};
 
   return std::move(stringifier_instance(value) );
-}   // stringify
+} // stringify
 
 inline std::string bugeye::util::vstringf(_BUGEYE_FORMAT const char* format,
                                           va_list                    args) {
