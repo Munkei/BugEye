@@ -4,8 +4,8 @@ addons:
       - clang
       - cmake
       - cmake-data
-      - g++-4.8
-      - gcc-4.8
+      - g++-4.9
+      - gcc-4.9
     sources:
       - george-edison55-precise-backports
       - ubuntu-toolchain-r-test
@@ -15,7 +15,7 @@ compiler:
   - gcc
 
 install:
-  - '[ "$CXX" = "g++" ] && export CXX="g++-4.8" CC="gcc-4.8"'
+  - '[ "$CXX" = "g++" ] && export CXX="g++-4.9" CC="gcc-4.9"'
 
 language: cpp
 

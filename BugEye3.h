@@ -134,7 +134,7 @@ namespace bugeye {
       test(const test& other) = default;
 
       template<typename T>
-      test& operator=(T t);
+      test& operator=(T body);
 
       test& operator=(test&& other)      = default;
 
@@ -304,7 +304,7 @@ namespace bugeye {
       explicit subtest(const std::string& name_);
 
       template<typename T>
-      void     operator=(const T& t);
+      void     operator=(const T& body);
 
       void     run() const override;
 
@@ -399,47 +399,47 @@ namespace bugeye {
 
     }; // class is_tuple
 
-    template<typename T>
+    template<typename value_t>
     struct stringifier_convert final {
 
-      std::string operator()(const T& t) const;
+      std::string operator()(const value_t& value) const;
 
     };
 
-    template<typename T>
+    template<typename value_t>
     struct stringifier_iterate final {
 
-      std::string operator()(const T& t) const;
+      std::string operator()(const value_t& value) const;
 
     };
 
-    template<typename T>
+    template<typename value_t>
     struct stringifier_pointer final {
 
-      std::string operator()(const T& t) const;
+      std::string operator()(const value_t& value) const;
 
     };
 
-    template<typename T>
+    template<typename value_t>
     struct stringifier_rtti final {
 
-      std::string operator()(const T& t) const;
+      std::string operator()(const value_t& value) const;
 
     };
 
-    template<typename T>
+    template<typename value_t>
     struct stringifier_stream final {
 
-      std::string operator()(const T& t) const;
+      std::string operator()(const value_t& value) const;
 
     };
 
-    template<typename T>
+    template<typename value_t>
     class stringifier_tuple final {
 
       public:
 
-        std::string operator()(const T& t) const;
+        std::string operator()(const value_t& value) const;
 
       private:
 
@@ -447,7 +447,7 @@ namespace bugeye {
                  typename... Tp>
         static void each(
           std::ostringstream&     oss,
-          const std::pair<Tp...>& t
+          const std::pair<Tp...>& value
         );
 
         template<std::size_t I,
@@ -455,7 +455,7 @@ namespace bugeye {
         static typename std::enable_if<I == sizeof ... (Tp),
                                        void>::type each(
           std::ostringstream&      oss,
-          const std::tuple<Tp...>& t
+          const std::tuple<Tp...>& value
         );
 
         template<std::size_t I,
@@ -463,7 +463,7 @@ namespace bugeye {
         static typename std::enable_if < ( I < sizeof ... (Tp) ),
         void > ::type each(
           std::ostringstream&      oss,
-          const std::tuple<Tp...>& t
+          const std::tuple<Tp...>& value
         );
 
     };
@@ -473,8 +473,8 @@ namespace bugeye {
 
     std::string ok_str(const bool ok);
 
-    template<typename T>
-    std::string        stringify(const T& t);
+    template<typename value_t>
+    std::string        stringify(const value_t& value);
 
     static std::string vstringf(_BUGEYE_FORMAT const char* format,
                                 va_list                    args)
@@ -952,7 +952,7 @@ inline bugeye::test::test(const std::string& name_)
   _plan(nullptr) {}
 
 template<typename T>
-inline bugeye::test& bugeye::test::operator=(T t) {
+inline bugeye::test& bugeye::test::operator=(T body) {
   static_assert(std::is_assignable<std::function<void()>, T>::value,
                 "Test can only be assigned functions");
 
@@ -964,7 +964,7 @@ inline bugeye::test& bugeye::test::operator=(T t) {
     throw config_error("Duplicate test");
   }
 
-  tests().emplace(*this, t);
+  tests().emplace(*this, body);
   return *this;
 } // =
 
@@ -1004,8 +1004,8 @@ inline bugeye::subtest::subtest(const std::string& name_)
   : test::impl(name_) {}
 
 template<typename T>
-inline void bugeye::subtest::operator=(const T& t) {
-  _body = t;
+inline void bugeye::subtest::operator=(const T& body) {
+  _body = body;
   bool ok = test::execution::run(*this);
   test::execution::push(assertion(ok, name) );
 }
@@ -1036,17 +1036,17 @@ inline std::string bugeye::util::ok_str(const bool ok) {
 
 template<typename T>
 inline std::string bugeye::util::stringifier_convert<T >::operator()(
-  const T& t
+  const T& value
 ) const {
-  return t;
+  return value;
 }
 
 template<typename T>
 inline std::string bugeye::util::stringifier_iterate<T >::operator()(
-  const T& t
+  const T& value
 ) const {
-  const auto         end = std::end(t);
-  auto               it  = std::begin(t);
+  const auto         end = std::end(value);
+  auto               it  = std::begin(value);
   std::ostringstream oss;
 
   oss << "[ ";
@@ -1062,7 +1062,7 @@ inline std::string bugeye::util::stringifier_iterate<T >::operator()(
 
 template<typename T>
 inline std::string bugeye::util::stringifier_pointer<T >::operator()(
-  const T& t
+  const T& value
 ) const {
   std::ostringstream oss;
 
@@ -1070,46 +1070,46 @@ inline std::string bugeye::util::stringifier_pointer<T >::operator()(
       << std::hex
       << std::setfill('0')
       << std::setw(sizeof(uintptr_t) * (CHAR_BIT / 4) )
-      << uintptr_t(t);
+      << uintptr_t(value);
   return std::move(oss.str() );
 }
 
 template<typename T>
 inline std::string bugeye::util::stringifier_rtti<T >::operator()(
-  const T& t
+  const T& value
 ) const {
-  return typeid(t).name();
+  return typeid(value).name();
 }
 
-template<typename T>
-inline std::string bugeye::util::stringifier_stream<T >::operator()(
-  const T& t
+template<typename value_t>
+inline std::string bugeye::util::stringifier_stream<value_t >::operator()(
+  const value_t& value
 ) const {
   typedef
     typename std::conditional <
-    ( (!std::is_same<T, bool>::value)
-    && std::is_integral<T>::value
-    && (sizeof(T) < sizeof(long) ) ),
+    ( (!std::is_same<value_t, bool>::value)
+    && std::is_integral<value_t>::value
+    && (sizeof(value_t) < sizeof(long) ) ),
   long,
-  const T&
+  const value_t&
   > ::type
-  T2;
+  value_t2;
 
   std::ostringstream oss;
-  T2                 t2 = t;
+  value_t2           value2 = value;
 
-  oss << std::boolalpha << t2;
+  oss << std::boolalpha << value2;
   return std::move(oss.str() );
 } // ()
 
 template<typename T>
 inline std::string bugeye::util::stringifier_tuple<T >::operator()(
-  const T& t
+  const T& value
 ) const {
   std::ostringstream oss;
 
   oss << "{ ";
-  each<0>(oss, t);
+  each<0>(oss, value);
   oss << " }";
   return std::move(oss.str() );
 }
@@ -1129,11 +1129,11 @@ template<std::size_t I,
          typename... Tp>
 inline void bugeye::util::stringifier_tuple<T >::each(
   std::ostringstream&     oss,
-  const std::pair<Tp...>& t
+  const std::pair<Tp...>& value
 ) {
-  oss << bugeye::util::stringify(t.first)
+  oss << bugeye::util::stringify(value.first)
       << ", "
-      << bugeye::util::stringify(t.second);
+      << bugeye::util::stringify(value.second);
 }
 
 template<typename T>
@@ -1142,38 +1142,38 @@ template<std::size_t I,
 inline typename std::enable_if < ( I < sizeof ... (Tp) ),
 void > ::type bugeye::util::stringifier_tuple<T >::each(
   std::ostringstream&      oss,
-  const std::tuple<Tp...>& t
+  const std::tuple<Tp...>& value
 ) {
-  oss << bugeye::util::stringify(std::get<I>(t) );
+  oss << bugeye::util::stringify(std::get<I>(value) );
 
   if (I + 1 < sizeof ... (Tp) ) {
     oss << ", ";
   }
-  each<I + 1, Tp...>(oss, t);
+  each<I + 1, Tp...>(oss, value);
 }
 
-template<typename T>
-inline std::string bugeye::util::stringify(const T& t) {
+template<typename value_t>
+inline std::string bugeye::util::stringify(const value_t& value) {
   const typename std::conditional<
-    std::is_pointer<T>::value
-    || std::is_same<T, std::nullptr_t>::value,
-    typename bugeye::util::stringifier_pointer<T>,
+    std::is_pointer<value_t>::value
+    || std::is_same<value_t, std::nullptr_t>::value,
+    typename bugeye::util::stringifier_pointer<value_t>,
     const typename std::conditional<
-      std::is_arithmetic<T>::value,
-      typename bugeye::util::stringifier_stream<T>,
+      std::is_arithmetic<value_t>::value,
+      typename bugeye::util::stringifier_stream<value_t>,
       typename std::conditional<
-        std::is_assignable<std::string, T>::value,
-        typename bugeye::util::stringifier_convert<T>,
+        std::is_assignable<std::string, value_t>::value,
+        typename bugeye::util::stringifier_convert<value_t>,
         typename std::conditional<
-          bugeye::util::is_tuple<T>::value,
-          typename bugeye::util::stringifier_tuple<T>,
+          bugeye::util::is_tuple<value_t>::value,
+          typename bugeye::util::stringifier_tuple<value_t>,
           typename std::conditional<
-            bugeye::util::is_iterable<T>::value,
-            typename bugeye::util::stringifier_iterate<T>,
+            bugeye::util::is_iterable<value_t>::value,
+            typename bugeye::util::stringifier_iterate<value_t>,
             typename std::conditional<
-              bugeye::util::is_streamable<T>::value,
-              typename bugeye::util::stringifier_stream<T>,
-              typename bugeye::util::stringifier_rtti<T>
+              bugeye::util::is_streamable<value_t>::value,
+              typename bugeye::util::stringifier_stream<value_t>,
+              typename bugeye::util::stringifier_rtti<value_t>
             >::type
           >::type
         >::type
@@ -1182,7 +1182,7 @@ inline std::string bugeye::util::stringify(const T& t) {
   >::type
   stringifier_instance;
 
-  return std::move(stringifier_instance(t) );
+  return std::move(stringifier_instance(value) );
 }   // stringify
 
 inline std::string bugeye::util::vstringf(_BUGEYE_FORMAT const char* format,
@@ -1320,13 +1320,15 @@ namespace bugeye {
   void run(int = 0,
            char const** = nullptr);
 
+  template<typename... args>
+  void unused(args...) {}
+
 } // namespace bugeye
 
 inline void bugeye::run(int, char const**) {}
 
 #  define _BUGEYE_UNUSED(...) \
-  [](...) {}                  \
-  (__VA_ARGS__);
+  { ::bugeye::unused(__VA_ARGS__); }
 
 #  define ok(...)       _BUGEYE_UNUSED(__VA_ARGS__)
 #  define is(...)       _BUGEYE_UNUSED(__VA_ARGS__)
