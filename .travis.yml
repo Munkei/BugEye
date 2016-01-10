@@ -1,13 +1,14 @@
 addons:
   apt:
     packages:
-      - clang
+      - clang-3.5
       - cmake
       - cmake-data
       - g++-4.9
       - gcc-4.9
     sources:
       - george-edison55-precise-backports
+      - llvm-toolchain-precise-3.5
       - ubuntu-toolchain-r-test
 
 compiler:
@@ -15,7 +16,8 @@ compiler:
   - gcc
 
 install:
-  - '[ "$CXX" = "g++" ] && export CXX="g++-4.9" CC="gcc-4.9" || :'
+  - '[ "$CXX" = "g++"     ] && export CXX="g++-4.9"     || :'
+  - '[ "$CXX" = "clang++" ] && export CXX="clang++-3.5" || :'
 
 language: cpp
 
