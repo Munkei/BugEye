@@ -1,16 +1,24 @@
-os:
-  - linux
-
-language: cpp
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - clang
 
 compiler:
   - clang
   - gcc
 
-sudo:
-  required
+install:
+  - '[ "$CXX" = "g++" ] && export CXX="g++-4.8" CC="gcc-4.8"'
 
-dist:
-  trusty
+language: cpp
+
+os:
+  - linux
 
 script: "./continuous.sh"
+
+sudo: false
