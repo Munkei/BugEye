@@ -29,10 +29,6 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsign-conversion
     -Wsign-promo
     -Wstrict-overflow=5
-    -Wsuggest-attribute=const
-    -Wsuggest-attribute=format
-    -Wsuggest-attribute=noreturn
-    -Wsuggest-attribute=pure
     -Wswitch-default
     -Wundef
   )
@@ -42,6 +38,10 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
       -Wlogical-op
       -Wnoexcept
       -Wstrict-null-sentinel
+      -Wsuggest-attribute=const
+      -Wsuggest-attribute=format
+      -Wsuggest-attribute=noreturn
+      -Wsuggest-attribute=pure
     )
   endif()
 

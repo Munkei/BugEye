@@ -96,7 +96,7 @@ static auto t2 = bugeye::test("Self").plan(1) = [] {
        "42",
        "unsigned long long");
 
-    const A a;
+    const A a {};
     ok(!bugeye::util::is_streamable<A>::value);
     ok(!bugeye::util::stringify(a).empty(), "stringify(A) does *something*");
 
