@@ -1,7 +1,7 @@
 addons:
   apt:
     sources:
-      - ppa:george-edison55/precise-backports
+      - george-edison55-precise-backports
       - ubuntu-toolchain-r-test
     packages:
       - clang
