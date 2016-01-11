@@ -17,6 +17,8 @@ set( CMAKE_CXX_STANDARD          11 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 set( CMAKE_VERBOSE_MAKEFILE      ON )
 
+set_property( GLOBAL PROPERTY USE_FOLDERS ON )
+
 enable_testing()
 
 find_program( ccache ccache )

@@ -49,6 +49,8 @@ namespace bugeye {
     location_t(const std::string& file_,
                const size_t       line_);
 
+    location_t&          operator=(const location_t& other) = delete;
+
     std::ostream&        stream_to(std::ostream& os) const;
 
     friend std::ostream& operator<<(std::ostream&     os,
@@ -77,12 +79,14 @@ namespace bugeye {
         const directive_t                          directive_ = directive_t::none
       );
 
-      std::ostream&        stream_to(std::ostream& os) const;
-
       bool                 ok() const;
 
-      friend std::ostream& operator<<(std::ostream& os,
-                                      const assertion& assertion);
+      assertion&           operator=(const assertion& other) = delete;
+
+      std::ostream&        stream_to(std::ostream& os) const;
+
+      friend std::ostream& operator<<(std::ostream&    os,
+                                      const assertion& assertion_);
 
     protected:
 
@@ -129,16 +133,12 @@ namespace bugeye {
 
       explicit test(const std::string& name_);
 
-      test(test&& other)      = default;
-
       test(const test& other) = default;
 
       template<typename T>
       test& operator=(T body);
 
-      test& operator=(test&& other)      = default;
-
-      test& operator=(const test& other) = default;
+      test& operator=(const test& other) = delete;
 
       test& plan(size_t p);
 
@@ -282,11 +282,13 @@ namespace bugeye {
 
       explicit execution(const test::impl& test);
 
-      execution(const execution& other) = delete;
+      execution(const execution& other)            = delete;
 
-      execution(execution&& other)      = delete;
+      execution(execution&& other)                 = delete;
 
-      bool run();
+      execution& operator=(const execution& other) = delete;
+
+      bool       run();
 
     protected:
 
@@ -489,7 +491,7 @@ namespace bugeye {
   } // namespace util
 
   std::ostream& operator<<(std::ostream&            os,
-                           const bugeye::assertion& assertion);
+                           const bugeye::assertion& assertion_);
 
   std::ostream& operator<<(std::ostream&             os,
                            const bugeye::location_t& location);
@@ -1073,15 +1075,15 @@ inline std::string bugeye::util::stringifier_pointer<T >::operator()(
       << std::hex
       << std::setfill('0')
       << std::setw(sizeof(uintptr_t) * (CHAR_BIT / 4) )
-      << uintptr_t(value);
+      << reinterpret_cast<const uintptr_t>(value);
   return std::move(oss.str() );
 }
 
 template<typename T>
 inline std::string bugeye::util::stringifier_rtti<T >::operator()(
-  const T& value
+  const T& /*value*/
 ) const {
-  return typeid(value).name();
+  return typeid(T).name();
 }
 
 template<typename value_t>
@@ -1149,11 +1151,22 @@ void > ::type bugeye::util::stringifier_tuple<T >::each(
 ) {
   oss << bugeye::util::stringify(std::get<I>(value) );
 
+#  ifdef _MSC_VER
+  // MSVC bug: https://msdn.microsoft.com/en-us/library/2c8f766e.aspx
+#    pragma warning(push)
+#    pragma warning(disable: 4127)
+#  endif
+
   if (I + 1 < sizeof ... (Tp) ) {
     oss << ", ";
   }
+
+#  ifdef _MSC_VER
+#    pragma warning(pop)
+#  endif
+
   each<I + 1, Tp...>(oss, value);
-}
+} // bugeye::util::stringifier_tuple::each
 
 template<typename value_t>
 inline std::string bugeye::util::stringify(const value_t& value) {
@@ -1214,8 +1227,8 @@ inline std::string bugeye::util::vstringf(_BUGEYE_FORMAT const char* format,
 // bugeye
 
 inline std::ostream& bugeye::operator<<(std::ostream&            os,
-                                        const bugeye::assertion& assertion) {
-  return assertion.stream_to(os);
+                                        const bugeye::assertion& assertion_) {
+  return assertion_.stream_to(os);
 }
 
 inline std::ostream& bugeye::operator<<(std::ostream&             os,
