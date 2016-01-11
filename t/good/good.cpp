@@ -5,6 +5,10 @@
 
 #include <BugEye3.h>
 
+#ifdef _MSC_VER
+#  pragma warning(disable: 4127)
+#endif
+
 static auto t = bugeye::test("Good").plan(11) = [] {
   ok(true);
 
