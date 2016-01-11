@@ -56,12 +56,11 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_compile_options(
     /FC # Displays the full path of source code files passed to cl.exe in diagnostic text.
     /GR # Enables run-time type information (RTTI).
+    /MDd
     /MP # Builds multiple source files concurrently.
-    /MTd
     /Od
     /W4
     /WX
-    /Za # Disables language extensions.
     /Zi # Generates complete debugging information.
   )
   add_definitions(
