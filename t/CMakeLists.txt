@@ -53,6 +53,10 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
   endif()
 
 elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+  set(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1" )
+  set(CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "/MT /O1 /Ob1 /D NDEBUG"           )
+  set(CMAKE_CXX_FLAGS_RELEASE_INIT        "/MT /O2 /Ob2 /D NDEBUG"           )
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "/MT /Zi /O2 /Ob1 /D NDEBUG"       )
   add_compile_options(
     /FC # Displays the full path of source code files passed to cl.exe in diagnostic text.
     /GR # Enables run-time type information (RTTI).
