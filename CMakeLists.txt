@@ -1,6 +1,14 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
-include( lib/cmake/VersionFromGit/VersionFromGit.cmake )
+include( lib/cmake/munkei-cmake/Munkei.cmake )
+
+include( MunkeiCcache         )
+include( MunkeiCoverage       )
+include( MunkeiCppcheck       )
+include( MunkeiStatistics     )
+include( MunkeiTags           )
+include( MunkeiVersionFromGit )
+include( MunkeiWasher         )
 
 version_from_git(
   LOG       ON
@@ -20,62 +28,29 @@ set( CMAKE_VERBOSE_MAKEFILE      ON )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 enable_testing()
+enable_coverage()
 
-find_program( ccache ccache )
-if( ccache )
-  set_property( GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${ccache} )
-  set_property( GLOBAL PROPERTY RULE_LAUNCH_LINK    ${ccache} )
-endif( ccache)
-
-add_custom_target( TAGS
-  COMMAND           ctags --langmap=c++:+.h *.h
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+ccache()
+cppcheck(
+  FORCE
+  IGNORE
+    lib/
+  INCLUDE_DIRS
+    ${PROJECT_SOURCE_DIR}
+  INCONCLUSIVE
+  SUPPRESS
+    missingIncludeSystem
 )
-
-add_custom_target( statistics
-  COMMAND           cloc
-                      --by-file-by-lang
-                      --exclude-dir lib/
-                      .
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+statistics(
+  EXCLUDE_DIRS
+    lib
+  OPTIONS
+    --by-file-by-lang
 )
+tags()
+washer()
 
 add_subdirectory( t )
-
-################################################################################
-
-find_program( washer washer )
-if( washer )
-  add_test(
-    NAME              washer
-    COMMAND           ${washer} -v
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  )
-endif( washer )
-
-################################################################################
-
-find_program( cppcheck cppcheck )
-if( cppcheck )
-  message( STATUS "Using Cppcheck: ${cppcheck}" )
-  set( cppcheck_template "ERROR: [{file}:{line}] ({severity}:{id}) {message}" )
-  add_test(
-    NAME              cppcheck
-    COMMAND           ${cppcheck}
-                        --enable=all
-                        --error-exitcode=2
-                        --force
-                        -I ${PROJECT_SOURCE_DIR}
-                        -i lib/
-                        --inconclusive
-                        --inline-suppr
-                        --std=c++11
-                        --suppress=missingIncludeSystem
-                        --template=${cppcheck_template}
-                        .
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  )
-endif( cppcheck )
 
 ################################################################################
 

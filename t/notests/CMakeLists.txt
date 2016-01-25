@@ -20,3 +20,5 @@ add_test(
 set_tests_properties( notests
   PROPERTIES PASS_REGULAR_EXPRESSION "This is the code that runs when we're not testing"
 )
+
+coverage_target( notests )

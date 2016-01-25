@@ -543,7 +543,7 @@ inline std::ostream& bugeye::assertion::stream_to(std::ostream& os) const {
 
       default:
         break;
-    }           // switch
+    } // switch
     if (!directive_reason.empty() ) {
       os << " " << directive_reason;
     }
