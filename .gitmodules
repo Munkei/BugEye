@@ -1,0 +1,3 @@
+[submodule "lib/cmake/munkei-cmake"]
+	path = lib/cmake/munkei-cmake
+	url = https://github.com/Munkei/munkei-cmake.git
