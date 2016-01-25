@@ -1,3 +1,0 @@
-[submodule "VersionFromGit.cmake"]
-	path = lib/cmake/VersionFromGit
-	url  = https://github.com/Munkei/VersionFromGit.cmake.git
