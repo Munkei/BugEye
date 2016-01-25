@@ -9,3 +9,5 @@ add_test(
   NAME    good
   COMMAND good
 )
+
+coverage_target( good )

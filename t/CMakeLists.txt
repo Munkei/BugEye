@@ -1,11 +1,14 @@
 cmake_minimum_required( VERSION 3.0.0 )
 
-include( CheckCXXCompilerFlag )
+include( MunkeiAddCompileFlags )
+include( MunkeiValgrind        )
 
 set( CMAKE_VERBOSE_MAKEFILE ON )
 
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
-  add_compile_options(
+  add_compile_flags(
+    REQUIRED
+    # LOG YES
     -g
     -pedantic
     -Wall
@@ -33,35 +36,33 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wundef
   )
 
-  if( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
-    add_compile_options(
-      -Wlogical-op
-      -Wnoexcept
-      -Wstrict-null-sentinel
-      -Wsuggest-attribute=const
-      -Wsuggest-attribute=format
-      -Wsuggest-attribute=noreturn
-      -Wsuggest-attribute=pure
-    )
-  endif()
-
-  if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
-    add_compile_options(
-      -Qunused-arguments
-      -Wno-format-nonliteral
-    )
-  endif()
-
+  add_compile_flags(
+    # LOG YES
+    -fdiagnostics-color=always
+    -Qunused-arguments
+    -Wlogical-op
+    -Wno-format-nonliteral
+    -Wnoexcept
+    -Wstrict-null-sentinel
+    -Wsuggest-attribute=const
+    -Wsuggest-attribute=format
+    -Wsuggest-attribute=noreturn
+    -Wsuggest-attribute=pure
+  )
 elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-  add_compile_options(
-    /FC # Displays the full path of source code files passed to cl.exe in diagnostic text.
-    /GR # Enables run-time type information (RTTI).
+  add_compile_flags(
+    # Displays the full path of source code files
+    /FC
+    # Enables run-time type information (RTTI).
+    /GR
     /MDd
-    /MP # Builds multiple source files concurrently.
+    # Builds multiple source files concurrently.
+    /MP
     /Od
     /W4
     /WX
-    /Zi # Generates complete debugging information.
+    # Generates complete debugging information.
+    /Zi
   )
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
@@ -72,13 +73,6 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
 else()
   message( WARNING
     "Using an unsupported compiler (${CMAKE_CXX_COMPILER_ID}). Good luck!"
-  )
-endif()
-
-check_cxx_compiler_flag( -fdiagnostics-color=always compiler_colour )
-if( compiler_colour )
-  add_compile_options(
-    -fdiagnostics-color=always
   )
 endif()
 
@@ -94,3 +88,12 @@ add_subdirectory( bad       )
 add_subdirectory( bailout   )
 add_subdirectory( exception )
 add_subdirectory( good      )
+
+valgrind(
+  TARGETS
+    # bad
+    # bailout
+    # exception
+    good
+    notests
+)

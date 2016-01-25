@@ -12,3 +12,5 @@ add_test(
 set_tests_properties( exception
   PROPERTIES WILL_FAIL YES
 )
+
+coverage_target( exception )

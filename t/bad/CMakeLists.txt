@@ -14,3 +14,5 @@ add_test(
 set_tests_properties( bad
   PROPERTIES WILL_FAIL YES
 )
+
+coverage_target( bad )
