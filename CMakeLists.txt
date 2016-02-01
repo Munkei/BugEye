@@ -28,7 +28,10 @@ set( CMAKE_VERBOSE_MAKEFILE      ON )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 enable_testing()
-enable_coverage()
+
+if( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
+  enable_coverage()
+endif( CMAKE_CXX_COMPILER_ID MATCHES "GNU" )
 
 ccache()
 cppcheck(

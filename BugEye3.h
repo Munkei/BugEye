@@ -803,12 +803,12 @@ inline bool bugeye::test::execution::run_all(int          argc,
   };
 
   const auto find_option
-    = [&options](const std::string& name) {
+    = [&options](const std::string& option_name) {
         return std::find_if(
           options.begin(),
           options.end(),
-          [&name](decltype(options)::value_type v) {
-      return v.first.find(name) != v.first.end();
+          [&option_name](typename decltype(options)::value_type v) {
+      return v.first.find(option_name) != v.first.end();
     }
         );
       };
