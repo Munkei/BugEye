@@ -18,7 +18,10 @@
 #  include <functional>
 #  include <iomanip>
 #  include <iostream>
+#  include <locale>
+#  include <map>
 #  include <memory>
+#  include <regex>
 #  include <set>
 #  include <sstream>
 #  include <stack>
@@ -112,6 +115,12 @@ namespace bugeye {
     explicit config_error(const std::string& what_arg);
 
   }; // struct config_error
+
+  enum class exit_code : int {
+    ok            = 0,
+    configuration = 2,
+    tests_failed  = 3,
+  }; // enum class exit_code
 
   class test {
 
@@ -229,7 +238,8 @@ namespace bugeye {
 
       static bool run(const test::impl& t);
 
-      static bool run_all();
+      static bool run_all(int          argc,
+                          char const** argv);
 
       template<typename got_t,
                typename expected_t>
@@ -749,13 +759,189 @@ inline bool bugeye::test::execution::run(const test::impl& t) {
   return ok;
 } // bugeye::test::execution::run
 
-inline bool bugeye::test::execution::run_all() {
+inline bool bugeye::test::execution::run_all(int          argc,
+                                             char const** argv) {
+  std::vector<std::string>                 explicit_tests;
+  bool                                     case_sensitive = true;
+  bool                                     ignore_missing = false;
+  std::vector<std::string>                 regexen;
+  std::regex_constants::syntax_option_type regex_options
+    = std::regex::ECMAScript;
+
+  const std::map<
+    std::set<std::string>,
+    std::function<void(std::function<std::string()> )>
+  >          options = {
+    {
+      { "i", "case-insensitive" },
+      [&](std::function<std::string()> )          {
+        case_sensitive = false;
+        regex_options |= std::regex::icase;
+      }
+    },
+    {
+      { "I", "ignore-missing"   },
+      [&](std::function<std::string()> )          {
+        ignore_missing = true;
+      }
+    },
+    {
+      { "l", "list"             },
+      [&](std::function<std::string()> )          {
+        for (const auto& t : tests() )            {
+          std::cout << t.name << std::endl;
+        }
+        std::exit(int(exit_code::ok) );
+      }
+    },
+    {
+      { "r", "regex"            },
+      [&](std::function<std::string()> get_value) {
+        regexen.push_back(get_value() );
+      }
+    },
+  };
+
+  const auto find_option
+    = [&options](const std::string& name) {
+        return std::find_if(
+          options.begin(),
+          options.end(),
+          [&name](decltype(options)::value_type v) {
+      return v.first.find(name) != v.first.end();
+    }
+        );
+      };
+
+  for (int i = 1; i < argc; ++i) {
+    const std::string arg(argv[i]);
+    if (arg == "--") {
+      for (++i; i < argc; ++i) {
+        explicit_tests.emplace_back(argv[i]);
+      }
+    } else if ( (arg.size() >= 2) && (arg[0] == '-') && (arg[1] != '-') ) {
+      for (size_t j = 1; j < arg.size(); j++) {
+        const std::string option = arg.substr(j, 1);
+        auto              it     = find_option(option);
+        if (it == options.end() ) {
+          throw bugeye::config_error("Unkown option ‘-" + option + "’");
+        }
+        it->second(
+          [&]() -> std::string {
+          if (j >= arg.size() - 1) {
+            if (++i >= argc) {
+              throw bugeye::config_error("‘-" + option + "’ requires a value");
+            }
+            return std::string(argv[i]);
+          } else {
+            std::string value = arg.substr(j + 1);
+            j = arg.size();
+            return std::move(value);
+          }
+        });
+      }
+    } else if ( (arg.size() >= 3) && (arg.substr(0, 2) == "--") ) {
+      const std::string option = arg.substr(2);
+      auto              it     = find_option(option);
+      if (it == options.end() ) {
+        throw bugeye::config_error("Unkown option ‘--" + option + "’");
+      }
+      it->second(
+        [&]() -> std::string {
+        if (++i >= argc) {
+          throw bugeye::config_error("‘--" + option + "’ requires a value");
+        }
+        return std::string(argv[i]);
+      });
+    } else {
+      explicit_tests.push_back(arg);
+    }
+  }
+
+  std::set<std::string> actual_tests;
+  if (explicit_tests.empty()
+      && regexen.empty() ) {
+    std::transform(tests().begin(),
+                   tests().end(),
+                   std::inserter(actual_tests, actual_tests.begin() ),
+                   [](const bugeye::test::impl& t) {
+      return t.name;
+    });
+  } else {
+    auto to_lower
+      = [](std::string& s) {
+          std::transform(s.begin(),
+                         s.end(),
+                         s.begin(),
+                         [](char c) {
+        return std::tolower(c, std::locale {});
+      });
+        };
+    auto it = explicit_tests.begin();
+    while (it != explicit_tests.end() ) {
+      std::string explicit_test = *it;
+      if (!case_sensitive) {
+        to_lower(explicit_test);
+      }
+      bool matched = false;
+      for (const auto& test : tests() ) {
+        std::string name = test.name;
+        if (!case_sensitive) {
+          to_lower(name);
+        }
+        if (name == explicit_test) {
+          matched = true;
+          actual_tests.insert(test.name);
+        }
+      }
+      if (matched) {
+        it = explicit_tests.erase(it);
+      } else {
+        ++it;
+      }
+    }
+
+    if (!ignore_missing
+        && !explicit_tests.empty() ) {
+      throw bugeye::config_error(
+              "No test named ‘" + *(explicit_tests.begin() ) + "’"
+      );
+    }
+
+    for (const auto& regex : regexen) {
+      bool matched = false;
+      for (const auto& test : tests() ) {
+        if (std::regex_match(test.name, std::regex(regex, regex_options) ) ) {
+          matched = true;
+          actual_tests.insert(test.name);
+        }
+      }
+      if (!matched
+          && !ignore_missing) {
+        throw bugeye::config_error(
+                "No test matches /" + regex + "/" + (case_sensitive ? "" : "i")
+        );
+      }
+    }
+  }
+
+  if (actual_tests.empty() ) {
+    if (ignore_missing) {
+      return true;
+    }
+    throw config_error("No tests to run");
+  }
+
   size_t failed = 0;
   size_t done   = 0;
 
-  std::cout << "1.." << tests().size() << std::endl;
+  std::cout << "1.." << actual_tests.size() << std::endl;
 
-  for (auto && t : tests() ) {
+  for (auto& t : tests() ) {
+    if (actual_tests.find(t.name) == actual_tests.end() ) {
+      continue;
+    }
+
     auto ok = run(t);
     ++done;
     std::cout
@@ -772,7 +958,7 @@ inline bool bugeye::test::execution::run_all() {
   }
 
   if (failed > 0) {
-    const auto total = tests().size();
+    const auto total = actual_tests.size();
     std::cout << "# "
               << failed
               << " of "
@@ -933,11 +1119,11 @@ inline bool bugeye::test::execution::run() {
       std::cout << " " << message;
     }
     std::cout << " At " << e.location << std::endl;
-    std::exit(1);
+    std::exit(int(exit_code::tests_failed) );
   } catch (const config_error& e) {
     std::cerr << "Something went wrong: " << e.what()
               << std::endl;
-    std::exit(2);
+    std::exit(int(exit_code::configuration) );
   } catch (const std::exception& e) {
     diag("%s: %s",
          bugeye::util::ansi("31", "Caught exception").c_str(),
@@ -1299,9 +1485,16 @@ inline std::ostream& bugeye::operator<<(std::ostream&             os,
   return location.stream_to(os);
 }
 
-inline void bugeye::run(int          /*argc*/,
-                        char const** /*argv*/) {
-  std::exit(bugeye::test::execution::run_all() ? 0 : 1);
+inline void bugeye::run(int          argc,
+                        char const** argv) {
+  try {
+    std::exit(int(bugeye::test::execution::run_all(argc, argv)
+                  ? exit_code::ok
+                  : exit_code::tests_failed) );
+  } catch (const bugeye::config_error& e) {
+    std::cerr << bugeye::util::ansi("31", e.what() ) << std::endl;
+    std::exit(int(exit_code::configuration) );
+  }
 }
 
 // *****************************************************************************
