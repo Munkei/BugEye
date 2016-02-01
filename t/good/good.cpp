@@ -74,7 +74,7 @@ static auto t2 = bugeye::test("Self").plan(1) = [] {
     is(int_ptr_str.substr(0, 2), "0x", "int* begins with ‘0x’");
 
     is(bugeye::util::stringify(1.2f), "1.2", "float");
-    is(bugeye::util::stringify(double(1.2) ), "1.2", "double");
+    is(bugeye::util::stringify(1.2), "1.2", "double");
     is(bugeye::util::stringify<long double>(1.2), "1.2", "long double");
 
     is(bugeye::util::stringify(true), "true", "bool");

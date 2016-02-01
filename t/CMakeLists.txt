@@ -11,14 +11,18 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     # LOG YES
     -g
     -pedantic
+    -pedantic-errors
     -Wall
     -Wcast-align
     -Wcast-qual
     -Wctor-dtor-privacy
+    -Wdouble-promotion
     -Werror
     -Wextra
     # -Wfatal-errors
+    -Wfloat-equal
     -Wformat=2
+    -Wformat-signedness
     -Winit-self
     -Wmissing-declarations
     -Wmissing-format-attribute
@@ -34,6 +38,8 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wstrict-overflow=5
     -Wswitch-default
     -Wundef
+    -Wuseless-cast
+    -Wzero-as-null-pointer-constant
   )
 
   add_compile_flags(
@@ -48,6 +54,9 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsuggest-attribute=format
     -Wsuggest-attribute=noreturn
     -Wsuggest-attribute=pure
+    -Wsuggest-final-types
+    -Wsuggest-final-methods
+    -Wsuggest-override
   )
 elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_compile_flags(
