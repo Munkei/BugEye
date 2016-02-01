@@ -761,6 +761,12 @@ inline bool bugeye::test::execution::run(const test::impl& t) {
 
 inline bool bugeye::test::execution::run_all(int          argc,
                                              char const** argv) {
+  typedef
+    std::map<
+      std::set<std::string>,
+      std::function<void (std::function<std::string()> )>
+    > options_t;
+
   std::vector<std::string>                 explicit_tests;
   bool                                     case_sensitive = true;
   bool                                     ignore_missing = false;
@@ -768,10 +774,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
   std::regex_constants::syntax_option_type regex_options
     = std::regex::ECMAScript;
 
-  const std::map<
-    std::set<std::string>,
-    std::function<void(std::function<std::string()> )>
-  >          options = {
+  const options_t options = {
     {
       { "i", "case-insensitive" },
       [&](std::function<std::string()> )          {
@@ -802,12 +805,12 @@ inline bool bugeye::test::execution::run_all(int          argc,
     },
   };
 
-  const auto find_option
+  const auto      find_option
     = [&options](const std::string& option_name) {
         return std::find_if(
           options.begin(),
           options.end(),
-          [&option_name](typename decltype(options)::value_type v) {
+          [&option_name](const options_t::value_type& v) {
       return v.first.find(option_name) != v.first.end();
     }
         );
