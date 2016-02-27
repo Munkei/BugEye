@@ -1,11 +1,9 @@
-# BugeEye Change Log #
+# BugeEye Changelog #
 
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning], and this file to [Keep a CHANGELOG].
 
-## Unreleased ##
-
-### Changed ###
+## [3.0.0] - FIXME ##
 
 *   FIXME
 
