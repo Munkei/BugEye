@@ -304,28 +304,28 @@ Any other exit code means something beyond the control of BugEye failed.
 
 ---
 
-  [Assertions]: #Assertions
+  [Assertions]: #assertions
 
   [BugEye's GitHub page]: https://github.com/Munkei/BugEye
 
-  [Command Line Arguments]: #Command-Line-Arguments
+  [Command Line Arguments]: #command-line-arguments
 
-  [Compiling]: #Compiling
+  [Compiling]: #compiling
 
-  [Entry Point]: #Entry-Point
+  [Entry Point]: #entry-point
 
-  [Output]: #Output
+  [Output]: #output
 
   [`std::printf` documentation]: http://en.cppreference.com/w/cpp/io/c/fprintf
 
   [`README.md`]: ./README.md
 
-  [Running]: #Running
+  [Running]: #running
 
-  [Sub-Tests]: #Sub-Tests
+  [Sub-Tests]: #sub-tests
 
   [TAP]: http://testanything.org
 
-  [Test]: #Tests
+  [Test]: #tests
 
-  [Tests]: #Tests
+  [Tests]: #tests

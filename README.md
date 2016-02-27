@@ -52,8 +52,8 @@ already reported, please report it.
 
 *   [The Wikipedia page on TAP]
 
-*   [prove], [`Test::Simple`] and [`Test::More`] (from the Perl world) have
-    served as inspiration for BugEye.
+*   [prove], [`Test::Simple`] and [`Test::More`] from the Perl world have served
+    as inspiration for BugEye.
 
 ---
 
