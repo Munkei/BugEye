@@ -1,27 +1,65 @@
 tools:
 
-  Line Endings:
+  Cppcheck:
+    type: Cppcheck
+    options:
+      include:
+        - 'text/x-c++hdr'
+        - 'text/x-c++src'
+        - 'text/x-chdr'
+        - 'text/x-csrc'
+      suppress:
+        - missingIncludeSystem
+        - syntaxError
+        - unusedFunction
+
+  Encoding:
+    type: Encoding
+    include:
+      - '*'
+
+  Executable:
+    type: Executable
+    include:
+      - '*'
+    options:
+      only:
+        - '*.sh'
+
+  LineEndings:
     type: LineEndings
     include:
-      - '*.cpp'
-      - '*.h'
-      - '*.txt'
-      - '*.yml'
+      - 'application/*'
+      - 'text/*'
+
+  ShellCheck:
+    type: ShellCheck
+    include:
+      - 'application/x-shellscript'
+
+  Tabs:
+    type: Regex
+    include:
+      - '*'
+    options:
+      mode: not match
+      pattern: '\t'
 
   Uncrustify:
     type: Uncrustify
     include:
-      - '*.cpp'
-      - '*.h'
+      - 'text/x-c++hdr'
+      - 'text/x-c++src'
+      - 'text/x-chdr'
+      - 'text/x-csrc'
 
-  Trailing Whitespace:
+  TrailingWhitespace:
     type: TrailingWhitespace
     include:
-      - '*.cpp'
-      - '*.h'
-      - '*.txt'
-      - '*.yml'
+      - 'application/*'
+      - 'text/*'
 
 exclude:
-  - ".git"
-  - "/build*"
+  - '.git'
+  - 'build*'
+  - 'lib'

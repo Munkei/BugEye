@@ -1,26 +1,22 @@
 {
   "name": "BugEye",
-  "commands": {
-    "configure": {
-      "command": "mkdir -pv build && cd build && cmake .."
-    },
+  "type": "cmake",
+  "cmake": {
     "build": {
-      "command": "cd build && cmake --build ."
-    },
+      "dir": "build"
+    }
+  },
+  "commands": {
     "clean": {
-      "command": "rm -rvf build tags"
+      "command": "rm -rvf \"${/cmake/build/dir}\" tags"
     },
     "statistics": {
-      "command": "make -C build statistics"
+      "command": "make -C \"${/cmake/build/dir}\" statistics",
+      "depends": "configure"
     },
     "tags": {
-      "command": "make -C build TAGS"
-    },
-    "package": {
-      "command": "make -C build package"
-    },
-    "test": {
-      "command": "cd build && ctest --extra-verbose"
+      "command": "make -C \"${/cmake/build/dir}\" TAGS",
+      "depends": "configure"
     }
   }
 }
