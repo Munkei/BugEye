@@ -60,8 +60,9 @@ add_subdirectory( t )
 install(
   FILES
     BugEye3.h
-    CHANGES.md
-    LICENSE_1_0.txt
+    CHANGELOG.md
+    LICENSE.md
+    MANUAL.md
     README.md
   DESTINATION .
 )

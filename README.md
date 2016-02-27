@@ -6,10 +6,10 @@
 
 ---
 
-**Copyright Theo Willows 2013–2015**
+**Copyright Theo Willows 2013–2016**
 
 **Distributed under the Boost Software License, Version 1.0.  (See accompanying
-file `LICENSE_1_0.txt` or copy at
+file `LICENSE.md` or copy at
 [`http://www.boost.org/LICENSE_1_0.txt`](http://www.boost.org/LICENSE_1_0.txt))**
 
 ---
@@ -32,14 +32,14 @@ For more information see [BugEye's GitHub page].
 
 ### Acquiring BugEye ###
 
-1.  Either download the tarball from https://github.com/Munkei/BugEye/releases,
-    or clone the repository (`https://github.com/Munkei/BugEye.git`).
+1.  Either download the tarball from
+    <https://github.com/Munkei/BugEye/releases>, or clone the repository
+    (`https://github.com/Munkei/BugEye.git`).
 
 2.  Put the directory (the cloned repository or the unpacked tarball) in a good
     place and add it to your compiler's list of include directories.
 
 3.  Follow the documentation and examples in the [Manual].
-
 
 ## Bugs ##
 

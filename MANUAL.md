@@ -1,5 +1,7 @@
 # BugEye Manual #
 
+**Copyright Theo Willows 2016**
+
 This document describes how to *use* the BugEye C++ unit testing framework. If
 you're looking for information on how to get it, how it is licensed, etc. please
 see [`README.md`] or [BugEye's GitHub page].
