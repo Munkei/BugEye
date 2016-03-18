@@ -41,6 +41,8 @@ tools:
     type: Regex
     include:
       - '*'
+    exclude:
+      - tags
     options:
       mode: not match
       pattern: '\t'
