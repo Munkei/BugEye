@@ -1257,7 +1257,7 @@ template<typename value_t>
 inline std::string bugeye::util::stringifier::operator()(
   const value_t& value
 ) const {
-  static const implementation_t<value_t> implementation;
+  static const implementation_t<value_t> implementation {};
 
   return implementation(value);
 }
