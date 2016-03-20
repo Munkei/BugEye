@@ -6,6 +6,8 @@ This document describes how to *use* the BugEye C++ unit testing framework. If
 you're looking for information on how to get it, how it is licensed, etc. please
 see [`README.md`] or [BugEye's GitHub page].
 
+If you prefer to learn from examples, skip ahead to [Examples] below.
+
 ## Introduction ##
 
 The general concept is that testing code is written within [Tests], and that an
@@ -37,7 +39,7 @@ like so:
 
 static auto test = bugeye::test("Test name") = [] {
   // Test code
-}
+};
 ```
 
 The one parameter to `bugeye::test` is the name of the test. It will be used for
@@ -56,7 +58,7 @@ but can be a good way of keeping track of your test code. To specify a plan, use
 ```cpp
 static auto test = bugeye::test("Test with a plan").plan(42) = [] {
   // Test code with 42 assertions and sub-tests
-}
+};
 ```
 
 ### Sub-Tests ###
@@ -74,10 +76,10 @@ static auto test = bugeye::test("Test name") = [] {
 
   bugeye::subtest("subtest") = [] {
     // Sub-test code
-  }
+  };
 
   // More test code
-}
+};
 ```
 
 You can nestle sub-tests to your heart's content. The only limit is the maximum
@@ -302,6 +304,162 @@ The exit code of the execution reflects the result of the testing:
 
 Any other exit code means something beyond the control of BugEye failed.
 
+## Examples ##
+
+This section contains some example code that has two tests; one for an imaginary
+class called `foo` and another test that tests miscellaneous things. And there's
+the code to run all the tests.
+
+### `main.cpp` ###
+
+This is the file containing `main()`.
+
+```cpp
+#include <iostream>
+
+#include <bugeye/BugEye3.h>
+
+int main(int         argc,
+         char const* argv[]) {
+  // Run the tests, *if* `_TEST` is defined
+  bugeye::run(argc, argv);
+  // The above will `exit()`, so the code below won't run
+
+  // If `_TEST` *isn't* defined, the ordinary contents of `main()` will run
+  std::clog << "This is the code that runs when we're not testing" << std::endl;
+}
+```
+
+### `test_foo.cpp` ###
+
+This is the test file for the `foo` class.
+
+```cpp
+#include <foo.h>
+
+#include <bugeye/BugEye3.h>
+
+// This is a test. It's a block of test code that has a name. It may also have a
+// plan, which is simply the number of assertions within the block. Should there
+// be a difference between the plan and the number of assertions actually run,
+// then the test will be considered a failure.
+static auto test = bugeye::test("Tests for foo").plan(5) = [] {
+
+  // The simplest assertion is `ok()`. It tests that something is truthy.
+  ok(foo::bar(), "The static method `bar()` returns `true`");
+
+  foo f{42};
+
+  // An other assertion is `is()`. It tests that two values are equal (it uses
+  // `==` internally). If they are not, then the test output will display both
+  // values for you to inspect.
+  is(f.bar, 42, "`bar`'s value came from the constructor");
+
+  is(f.baz, 'x', "`baz`'s value is the default");
+
+  const char* name = f.name();
+
+  if (name == nullptr) {
+    // If something went so wrong there's no point in continuing the test, you
+    // can `bail_out()`, with an optional message. This will stop all tests and
+    // counts as a failure.
+    bail_out("`name()` returned null");
+  }
+
+  // `diag()` isn't really an assertion, it just logs a message in the test
+  // output.
+  diag("Name = ‘%s’", name);
+
+  std::string name_str{name};
+
+  // There's also `isnt()`; the opposite of `is()`
+  isnt(name_str, "UNKNOWN", "The name isn't ‘UNKNOWN’");
+
+  try {
+    f.calculate(2, 3.1415);
+    // `pass()` is like an assertion that always passes.
+    pass("`calculate()` didn't throw");
+  } catch (const foo::calculation_error& e) {
+    // `fail()` is the opposite of `pass()`.
+    fail("`calculate()` threw: %s", e.what() );
+  }
+
+  // There's no need to catch `...` above: Any uncaught exception will result in
+  // a failed test.
+
+};
+```
+
+### `test_misc.cpp` ###
+
+This is the test file for the miscellaneous things.
+
+```cpp
+#include <number_stuff.h>
+#include <string_stuff.h>
+
+#include <bugeye/BugEye3.h>
+
+static auto test = bugeye::test("Misc.").plan(2) = [] {
+
+  // This is a sub-test. It's like a test, except it resides *within* a test (or
+  // another sub-test). Note that it counts as a single item in its parent's
+  // plan.
+  bugeye::subtest("Number stuff") = [] {
+
+    is(fibonacci(13), 144, "The 13th Fibonacci number is 144");
+
+  };
+
+  // This is another sub-test.
+  bugeye::subtest("String stuff").plan(3) = [] {
+
+    is(trim(" foo"), "foo");
+    is(trim("foo "), "foo");
+    is(trim(" foo "), "foo");
+
+  };
+
+};
+```
+
+### Sample Output ###
+
+Running the above code (and the actual implementation (not shown)) will produce
+output that looks something like the following:
+
+```tap
+1..2
+    1..5
+    ok 1 The static method `bar()` returns `true`
+    ok 2 `bar`'s value came from the constructor
+    ok 3 `baz`'s value is the default
+    # Name = ‘George’
+    ok 4 The name isn't ‘UNKNOWN’
+    ok 5 `calculate()` didn't throw
+ok 1 Tests for foo
+    1..2
+        ok 1 The 13th Fibonacci number is 144
+    ok 1 Number stuff
+        1..3
+        ok 1
+        not ok 2
+        # Assertion failed at /src/tests/test_misc.cpp:18
+        # Got:      fo
+        # Expected: foo
+        not ok 3
+        # Assertion failed at /src/tests/test_misc.cpp:19
+        # Got:      fo
+        # Expected: foo
+    not ok 2 String stuff
+not ok 2 Misc.
+# 1 of 2 tests failed!
+```
+
+Uh-oh! Looks like the `trim` function didn't work as expected. This made the
+‘String stuff’ sub-test fail, which made the ‘Misc.’ test fail, which made the
+whole process fail and exit non-zero.
+
 ---
 
   [Assertions]: #assertions
@@ -313,6 +471,8 @@ Any other exit code means something beyond the control of BugEye failed.
   [Compiling]: #compiling
 
   [Entry Point]: #entry-point
+
+  [Examples]: #examples
 
   [Output]: #output
 
