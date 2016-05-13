@@ -43,8 +43,10 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -fdiagnostics-color=always
     -Qunused-arguments
     -Wdouble-promotion
+    -Weffc++
     -Wformat-signedness
     -Wlogical-op
+    -Wno-c++98-compat-pedantic
     -Wno-format-nonliteral
     -Wnoexcept
     -Wstrict-null-sentinel

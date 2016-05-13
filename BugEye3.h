@@ -145,6 +145,8 @@ namespace bugeye {
 
       test(const test& other) = default;
 
+      virtual ~test()         = default;
+
       template<typename T>
       test& operator=(T body);
 
@@ -317,11 +319,11 @@ namespace bugeye {
       explicit subtest(const std::string& name_);
 
       template<typename T>
-      void     operator=(const T& body);
+      const subtest& operator=(const T& body);
 
-      void     run() const override;
+      void           run() const override;
 
-      subtest& plan(size_t p);
+      subtest&       plan(size_t p);
 
     protected:
 
@@ -561,6 +563,7 @@ inline bugeye::assertion::assertion(
 )
   : description(description_),
   directive(directive_),
+  directive_reason(),
   location(location_),
   number(0),
   _ok(ok_) {}
@@ -1102,7 +1105,9 @@ inline bool bugeye::test::execution::todo_stop() {
 } // bugeye::test::execution::todo_stop
 
 inline bugeye::test::execution::execution(const test::impl& test)
-  : end_result(end_result_t::none),
+  : assertions(),
+  directives(),
+  end_result(end_result_t::none),
   _test(test) {}
 
 inline bool bugeye::test::execution::run() {
@@ -1228,7 +1233,8 @@ inline void bugeye::test::impl::run() const {
 }
 
 inline bugeye::test::impl::impl(const std::string& name_)
-  : test(name_) {}
+  : test(name_),
+  _body() {}
 
 // subtest
 
@@ -1236,10 +1242,11 @@ inline bugeye::subtest::subtest(const std::string& name_)
   : test::impl(name_) {}
 
 template<typename T>
-inline void bugeye::subtest::operator=(const T& body) {
+inline const bugeye::subtest& bugeye::subtest::operator=(const T& body) {
   _body = body;
   bool ok = test::execution::run(*this);
   test::execution::push(assertion(ok, name) );
+  return *this;
 }
 
 inline bugeye::subtest& bugeye::subtest::plan(size_t p) {
