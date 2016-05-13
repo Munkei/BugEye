@@ -31,9 +31,9 @@
 #  include <utility>
 
 #  ifdef _MSC_VER
-#    define _BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
+#    define BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
 #  else
-#    define _BUGEYE_FORMAT
+#    define BUGEYE_FORMAT
 #  endif
 
 namespace bugeye {
@@ -193,9 +193,9 @@ namespace bugeye {
 
     public:
 
-      static void bail_out(const location_t&          location,
-                           _BUGEYE_FORMAT const char* format = nullptr,
-                           ...)
+      static void bail_out_(const location_t&         location,
+                            BUGEYE_FORMAT const char* format = nullptr,
+                            ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 2, 3) ) )
       __attribute__ ( (noreturn) )
@@ -204,34 +204,34 @@ namespace bugeye {
 
       static std::stack<execution>& current();
 
-      static void                   diag(
-        _BUGEYE_FORMAT const char* format = nullptr,
+      static void                   diag_(
+        BUGEYE_FORMAT const char* format = nullptr,
         ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 1, 2) ) )
 #  endif
       ;
 
-      static void fail(const location_t&          location,
-                       _BUGEYE_FORMAT const char* format = nullptr,
-                       ...)
+      static void fail_(const location_t&         location,
+                        BUGEYE_FORMAT const char* format = nullptr,
+                        ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 2, 3) ) )
 #  endif
       ;
 
-      static bool ok(const location_t&          location,
-                     bool                       expr,
-                     _BUGEYE_FORMAT const char* format = nullptr,
-                     ...)
+      static bool ok_(const location_t&         location,
+                      bool                      expr,
+                      BUGEYE_FORMAT const char* format = nullptr,
+                      ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 3, 4) ) )
 #  endif
       ;
 
-      static void pass(const location_t&          location,
-                       _BUGEYE_FORMAT const char* format = nullptr,
-                       ...)
+      static void pass_(const location_t&         location,
+                        BUGEYE_FORMAT const char* format = nullptr,
+                        ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 2, 3) ) )
 #  endif
@@ -246,11 +246,11 @@ namespace bugeye {
 
       template<typename got_t,
                typename expected_t>
-      static bool is(const location_t&          location,
-                     const got_t&               got,
-                     const expected_t&          expected,
-                     _BUGEYE_FORMAT const char* format = nullptr,
-                     ...)
+      static bool is_(const location_t&         location,
+                      const got_t&              got,
+                      const expected_t&         expected,
+                      BUGEYE_FORMAT const char* format = nullptr,
+                      ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 4, 5) ) )
 #  endif
@@ -258,26 +258,26 @@ namespace bugeye {
 
       template<typename got_t,
                typename unexpected_t>
-      static bool isnt(const location_t&          location,
-                       const got_t&               got,
-                       const unexpected_t&        unexpected,
-                       _BUGEYE_FORMAT const char* format = nullptr,
-                       ...)
+      static bool isnt_(const location_t&         location,
+                        const got_t&              got,
+                        const unexpected_t&       unexpected,
+                        BUGEYE_FORMAT const char* format = nullptr,
+                        ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 4, 5) ) )
 #  endif
       ;
 
-      static void skip(const location_t&          location,
-                       const size_t               how_many,
-                       _BUGEYE_FORMAT const char* format = nullptr,
-                       ...)
+      static void skip_(const location_t&         location,
+                        const size_t              how_many,
+                        BUGEYE_FORMAT const char* format = nullptr,
+                        ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 3, 4) ) )
 #  endif
       ;
 
-      static bool todo_start(_BUGEYE_FORMAT const char* format = nullptr,
+      static bool todo_start(BUGEYE_FORMAT const char* format = nullptr,
                              ...)
 #  ifdef __GNUC__
       __attribute__( (format(printf, 1, 2) ) )
@@ -531,8 +531,8 @@ namespace bugeye {
     template<typename value_t>
     std::string        stringify(const value_t& value);
 
-    static std::string vstringf(_BUGEYE_FORMAT const char* format,
-                                va_list                    args)
+    static std::string vstringf(BUGEYE_FORMAT const char* format,
+                                va_list                   args)
 #  ifdef __GNUC__
     __attribute__( (format(printf, 1, 0) ) )
 #  endif
@@ -547,7 +547,11 @@ namespace bugeye {
                            const bugeye::location_t& location);
 
   void run(int          argc = 0,
-           char const** argv = nullptr);
+           char const** argv = nullptr)
+#  ifdef __GNUC__
+  __attribute__ ( (noreturn) )
+#  endif
+  ;
 
 } // namespace BugEye
 
@@ -592,7 +596,15 @@ inline std::ostream& bugeye::assertion::stream_to(std::ostream& os) const {
         os << "TODO";
         break;
 
+      case directive_t::none:
+#  ifdef __clang__
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wcovered-switch-default"
+#  endif
       default:
+#  ifdef __clang__
+#    pragma clang diagnostic pop
+#  endif
         break;
     } // switch
     if (!directive_reason.empty() ) {
@@ -647,9 +659,9 @@ inline std::ostream& bugeye::location_t::stream_to(std::ostream& os) const {
 
 // execution
 
-inline void bugeye::test::execution::bail_out(
-  const bugeye::location_t&  location,
-  _BUGEYE_FORMAT const char* format,
+inline void bugeye::test::execution::bail_out_(
+  const bugeye::location_t& location,
+  BUGEYE_FORMAT const char* format,
   ...
 ) {
   va_list args;
@@ -667,8 +679,8 @@ inline std::stack<bugeye::test::execution>& bugeye::test::execution::current() {
   return current;
 }
 
-inline void bugeye::test::execution::diag(_BUGEYE_FORMAT const char* format,
-                                          ...) {
+inline void bugeye::test::execution::diag_(BUGEYE_FORMAT const char* format,
+                                           ...) {
   va_list           args;
   const std::string indentation(current().size() * 4, ' ');
 
@@ -682,9 +694,9 @@ inline void bugeye::test::execution::diag(_BUGEYE_FORMAT const char* format,
   }
 } // bugeye::test::execution::diag
 
-inline void bugeye::test::execution::fail(
-  const bugeye::location_t&  location,
-  _BUGEYE_FORMAT const char* format,
+inline void bugeye::test::execution::fail_(
+  const bugeye::location_t& location,
+  BUGEYE_FORMAT const char* format,
   ...) {
   va_list args;
 
@@ -697,10 +709,10 @@ inline void bugeye::test::execution::fail(
   va_end(args);
 } // bugeye::test::execution::fail
 
-inline bool bugeye::test::execution::ok(
-  const bugeye::location_t&  location,
-  bool                       expr,
-  _BUGEYE_FORMAT const char* format,
+inline bool bugeye::test::execution::ok_(
+  const bugeye::location_t& location,
+  bool                      expr,
+  BUGEYE_FORMAT const char* format,
   ...) {
   va_list args;
 
@@ -715,9 +727,9 @@ inline bool bugeye::test::execution::ok(
   return expr;
 } // bugeye::test::execution::ok
 
-inline void bugeye::test::execution::pass(
-  const bugeye::location_t&  location,
-  _BUGEYE_FORMAT const char* format,
+inline void bugeye::test::execution::pass_(
+  const bugeye::location_t& location,
+  BUGEYE_FORMAT const char* format,
   ...) {
   va_list args;
 
@@ -986,11 +998,11 @@ inline bool bugeye::test::execution::run_all(int          argc,
 
 template<typename got_t,
          typename expected_t>
-inline bool bugeye::test::execution::is(
-  const bugeye::location_t&  location,
-  const got_t&               got,
-  const expected_t&          expected,
-  _BUGEYE_FORMAT const char* format,
+inline bool bugeye::test::execution::is_(
+  const bugeye::location_t& location,
+  const got_t&              got,
+  const expected_t&         expected,
+  BUGEYE_FORMAT const char* format,
   ...
 ) {
   va_list args;
@@ -1006,8 +1018,8 @@ inline bool bugeye::test::execution::is(
   va_end(args);
 
   if (!ok) {
-    diag("Got:      %s", bugeye::util::stringify(got).c_str() );
-    diag("Expected: %s", bugeye::util::stringify(expected).c_str() );
+    diag_("Got:      %s", bugeye::util::stringify(got).c_str() );
+    diag_("Expected: %s", bugeye::util::stringify(expected).c_str() );
   }
 
   return ok;
@@ -1015,11 +1027,11 @@ inline bool bugeye::test::execution::is(
 
 template<typename got_t,
          typename unexpected_t>
-inline bool bugeye::test::execution::isnt(
-  const bugeye::location_t&  location,
-  const got_t&               got,
-  const unexpected_t&        unexpected,
-  _BUGEYE_FORMAT const char* format,
+inline bool bugeye::test::execution::isnt_(
+  const bugeye::location_t& location,
+  const got_t&              got,
+  const unexpected_t&       unexpected,
+  BUGEYE_FORMAT const char* format,
   ...
 ) {
   va_list args;
@@ -1034,17 +1046,17 @@ inline bool bugeye::test::execution::isnt(
   va_end(args);
 
   if (!ok) {
-    diag("Got:        %s", stringify(got).c_str() );
-    diag("Unexpected: %s", stringify(unexpected).c_str() );
+    diag_("Got:        %s", stringify(got).c_str() );
+    diag_("Unexpected: %s", stringify(unexpected).c_str() );
   }
 
   return ok;
 } // bugeye::test::execution::isnt
 
-inline void bugeye::test::execution::skip(
-  const bugeye::location_t&  location,
-  const size_t               how_many,
-  _BUGEYE_FORMAT const char* format,
+inline void bugeye::test::execution::skip_(
+  const bugeye::location_t& location,
+  const size_t              how_many,
+  BUGEYE_FORMAT const char* format,
   ...
 ) {
   va_list args;
@@ -1073,7 +1085,7 @@ inline void bugeye::test::execution::skip(
 } // bugeye::test::execution::skip
 
 inline bool bugeye::test::execution::todo_start(
-  _BUGEYE_FORMAT const char* format,
+  BUGEYE_FORMAT const char* format,
   ...
 ) {
   va_list args;
@@ -1133,12 +1145,12 @@ inline bool bugeye::test::execution::run() {
               << std::endl;
     std::exit(int(exit_code::configuration) );
   } catch (const std::exception& e) {
-    diag("%s: %s",
-         bugeye::util::ansi("31", "Caught exception").c_str(),
-         e.what() );
+    diag_("%s: %s",
+          bugeye::util::ansi("31", "Caught exception").c_str(),
+          e.what() );
     end_result = end_result_t::exception;
   } catch (...) {
-    diag("%s", bugeye::util::ansi("31", "Caught exception").c_str() );
+    diag_("%s", bugeye::util::ansi("31", "Caught exception").c_str() );
     end_result = end_result_t::exception;
   }
 
@@ -1421,8 +1433,8 @@ inline std::string bugeye::util::stringify(const value_t& value) {
   return std::move(s(value) );
 } // stringify
 
-inline std::string bugeye::util::vstringf(_BUGEYE_FORMAT const char* format,
-                                          va_list                    args) {
+inline std::string bugeye::util::vstringf(BUGEYE_FORMAT const char* format,
+                                          va_list                   args) {
   if (format == nullptr) {
     return "";
   }
@@ -1474,37 +1486,37 @@ inline void bugeye::run(int          argc,
 #  define BUGEYE_CONCAT(a, b)  BUGEYE_CONCAT_(a, b)
 
 #  define ok(...)                             \
-  ::bugeye::test::execution::ok(              \
+  ::bugeye::test::execution::ok_(             \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
 #  define is(...)                             \
-  ::bugeye::test::execution::is(              \
+  ::bugeye::test::execution::is_(             \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
 #  define isnt(...)                           \
-  ::bugeye::test::execution::isnt(            \
+  ::bugeye::test::execution::isnt_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
 #  define pass(...)                           \
-  ::bugeye::test::execution::pass(            \
+  ::bugeye::test::execution::pass_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
 #  define fail(...)                           \
-  ::bugeye::test::execution::fail(            \
+  ::bugeye::test::execution::fail_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
 #  define diag(...) \
-  ::bugeye::test::execution::diag(__VA_ARGS__)
+  ::bugeye::test::execution::diag_(__VA_ARGS__)
 
 #  define todo(...)                                                            \
   for (bool _bugeye_todo = ::bugeye::test::execution::todo_start(__VA_ARGS__); \
@@ -1513,7 +1525,7 @@ inline void bugeye::run(int          argc,
 
 #  define skip(CONDITION, ...)                  \
   if (CONDITION) {                              \
-    ::bugeye::test::execution::skip(            \
+    ::bugeye::test::execution::skip_(           \
       ::bugeye::location_t(__FILE__, __LINE__), \
       __VA_ARGS__                               \
     );                                          \
@@ -1521,7 +1533,7 @@ inline void bugeye::run(int          argc,
   else
 
 #  define bail_out(...)                       \
-  ::bugeye::test::execution::bail_out(        \
+  ::bugeye::test::execution::bail_out_(       \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
@@ -1570,17 +1582,17 @@ namespace bugeye {
 
 inline void bugeye::run(int, char const**) {}
 
-#  define _BUGEYE_UNUSED(...) \
+#  define BUGEYE_UNUSED(...) \
   { ::bugeye::unused(__VA_ARGS__); }
 
-#  define ok(...)       _BUGEYE_UNUSED(__VA_ARGS__)
-#  define is(...)       _BUGEYE_UNUSED(__VA_ARGS__)
-#  define isnt(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define diag(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define pass(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define fail(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define skip(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define todo(...)     _BUGEYE_UNUSED(__VA_ARGS__)
-#  define bail_out(...) _BUGEYE_UNUSED(__VA_ARGS__)
+#  define ok(...)       BUGEYE_UNUSED(__VA_ARGS__)
+#  define is(...)       BUGEYE_UNUSED(__VA_ARGS__)
+#  define isnt(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define diag(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define pass(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define fail(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define skip(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define todo(...)     BUGEYE_UNUSED(__VA_ARGS__)
+#  define bail_out(...) BUGEYE_UNUSED(__VA_ARGS__)
 
 #endif // ifdef _TEST

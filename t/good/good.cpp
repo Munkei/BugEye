@@ -5,6 +5,10 @@
 
 #include <BugEye3.h>
 
+#ifdef __GNUC__
+#  pragma GCC diagnostic ignored "-Wunreachable-code"
+#endif
+
 #ifdef _MSC_VER
 #  pragma warning(disable: 4127)
 #endif

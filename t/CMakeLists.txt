@@ -42,13 +42,18 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     # LOG YES
     -fdiagnostics-color=always
     -Qunused-arguments
+    -Wcovered-switch-default
+    -Wdisabled-macro-expansion
     -Wdouble-promotion
     -Weffc++
     -Wformat-signedness
+    -Wgcc-compat
     -Wlogical-op
+    -Wmissing-noreturn
     -Wno-c++98-compat-pedantic
     -Wno-format-nonliteral
     -Wnoexcept
+    -Wreserved-id-macro
     -Wstrict-null-sentinel
     -Wsuggest-attribute=const
     -Wsuggest-attribute=format
@@ -57,6 +62,7 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsuggest-final-methods
     -Wsuggest-final-types
     -Wsuggest-override
+    -Wswitch-enum
     -Wuseless-cast
     -Wzero-as-null-pointer-constant
   )
