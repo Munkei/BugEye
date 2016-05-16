@@ -1,11 +1,3 @@
-*.html
-*.tar.gz
-*.user
-CMakeLists.txt.user.*
-
-/build*
-/tags
-
 ._*
 .DS_Store
 .DS_Store?
@@ -13,8 +5,15 @@ CMakeLists.txt.user.*
 .Trashes
 *.bak
 *.gch
+*.html
+*.tar.gz
+*.user
+*.user.json
 *#
 *~
+/build*
+/tags
+CMakeLists.txt.user.*
 ehthumbs.db
 Icon?
 Thumbs.db

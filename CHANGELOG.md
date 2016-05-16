@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning], and this file to [Keep a CHANGELOG].
 
+## [3.0.1] - 2016-05-16 ##
+
+### Fixed ###
+
+*   BugEye now passes more compiler warnings, namely:
+
+    *   `-Wcovered-switch-default`
+    *   `-Wdisabled-macro-expansion`
+    *   `-Weffc++`
+    *   `-Wgcc-compat`
+    *   `-Wmissing-noreturn`
+    *   `-Wreserved-id-macro`
+    *   `-Wswitch-enum`
+
 ## [3.0.0] - 2016-04-11 ##
 
 Virtually everything has been rewritten to be more C++ and use less preprocessor
@@ -48,6 +62,8 @@ hackery.
 Initial version.
 
 ---
+
+  [3.0.1]: https://github.com/Munkei/BugEye/compare/v3.0.0...v3.0.1
 
   [3.0.0]: https://github.com/Munkei/BugEye/compare/v2.0.1...v3.0.0
 
