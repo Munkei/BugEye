@@ -28,6 +28,7 @@
 #  include <stack>
 #  include <type_traits>
 #  include <vector>
+#  include <unordered_set>
 #  include <utility>
 
 #  ifdef _MSC_VER
@@ -782,19 +783,16 @@ inline bool bugeye::test::execution::run_all(int          argc,
       std::function<void (std::function<std::string()> )>
     > options_t;
 
-  std::vector<std::string>                 explicit_tests;
-  bool                                     case_sensitive = true;
-  bool                                     ignore_missing = false;
-  std::vector<std::string>                 regexen;
-  std::regex_constants::syntax_option_type regex_options
-    = std::regex::ECMAScript;
+  std::unordered_set<std::string> explicit_tests;
+  bool                            case_sensitive = true;
+  bool                            ignore_missing = false;
+  std::unordered_set<std::string> regexen;
 
-  const options_t options = {
+  const options_t                 options = {
     {
       { "i", "case-insensitive" },
       [&](std::function<std::string()> )          {
         case_sensitive = false;
-        regex_options |= std::regex::icase;
       }
     },
     {
@@ -815,12 +813,12 @@ inline bool bugeye::test::execution::run_all(int          argc,
     {
       { "r", "regex"            },
       [&](std::function<std::string()> get_value) {
-        regexen.push_back(get_value() );
+        regexen.insert(get_value() );
       }
     },
   };
 
-  const auto      find_option
+  const auto                      find_option
     = [&options](const std::string& option_name) {
         return std::find_if(
           options.begin(),
@@ -835,7 +833,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
     const std::string arg(argv[i]);
     if (arg == "--") {
       for (++i; i < argc; ++i) {
-        explicit_tests.emplace_back(argv[i]);
+        explicit_tests.emplace(argv[i]);
       }
     } else if ( (arg.size() >= 2) && (arg[0] == '-') && (arg[1] != '-') ) {
       for (size_t j = 1; j < arg.size(); j++) {
@@ -872,7 +870,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
         return std::string(argv[i]);
       });
     } else {
-      explicit_tests.push_back(arg);
+      explicit_tests.insert(arg);
     }
   }
 
@@ -927,6 +925,10 @@ inline bool bugeye::test::execution::run_all(int          argc,
     }
 
     for (const auto& regex : regexen) {
+      const std::regex_constants::syntax_option_type regex_options
+        = case_sensitive
+          ? std::regex::ECMAScript
+          : std::regex::ECMAScript | std::regex::icase;
       bool matched = false;
       for (const auto& test : tests() ) {
         if (std::regex_match(test.name, std::regex(regex, regex_options) ) ) {
@@ -955,6 +957,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
 
   std::cout << "1.." << actual_tests.size() << std::endl;
 
+  // This is where it happens!
   for (auto& t : tests() ) {
     if (actual_tests.find(t.name) == actual_tests.end() ) {
       continue;
