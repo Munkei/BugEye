@@ -6,5 +6,5 @@
 #include <BugEye3.h>
 
 static auto t = bugeye::test("Too Few").plan(100) = [] {
-  ok(true, "asdf");
+  OK(true, "asdf");
 };

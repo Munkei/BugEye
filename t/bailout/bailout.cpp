@@ -6,5 +6,5 @@
 #include <BugEye3.h>
 
 static auto t = bugeye::test("BailOut") = [] {
-  bail_out("Testing bailing out");
+  BAIL_OUT("Testing bailing out");
 };

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning], and this file to [Keep a CHANGELOG].
 
+## [Unreleased] ##
+
+### Changed ###
+
+*   All test macros (`OK`, `IS`, etc.) are now upper-case by default. The
+    lower-case variants can be enabled by defining `BUGEYE_LOWERCASE` to
+    something truthy.
+
+    **This is a breaking change!** But it makes BugEye less intrusive.
+
+*   The preprocessor variable for enabling testing is now `TEST`. The old one,
+    `_TEST`, will still work, but its use is discouraged.
+
 ## [3.0.1] - 2016-05-16 ##
 
 ### Fixed ###

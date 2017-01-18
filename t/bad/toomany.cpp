@@ -9,6 +9,6 @@ static auto t
       = bugeye::test("Too Many").plan(1)
       = []() {
           for (size_t i = 0; i < 3; ++i) {
-            ok(true);
+            OK(true);
           }
         };

@@ -3,8 +3,6 @@ cmake_minimum_required( VERSION 3.0.0 )
 include( MunkeiAddCompileFlags )
 include( MunkeiValgrind        )
 
-set( CMAKE_VERBOSE_MAKEFILE ON )
-
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
   add_compile_flags(
     REQUIRED
@@ -36,7 +34,7 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wstrict-overflow=5
     -Wswitch-default
     -Wundef
-  )
+    )
 
   add_compile_flags(
     # LOG YES
@@ -65,7 +63,7 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wswitch-enum
     -Wuseless-cast
     -Wzero-as-null-pointer-constant
-  )
+    )
 elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_compile_flags(
     # Displays the full path of source code files
@@ -80,24 +78,26 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     /WX
     # Generates complete debugging information.
     /Zi
-  )
+    )
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
     /D_UNICODE
     /D_USE_ATTRIBUTES_FOR_SAL=1
     /DUNICODE
-  )
+    )
 else()
   message( WARNING
     "Using an unsupported compiler (${CMAKE_CXX_COMPILER_ID}). Good luck!"
-  )
+    )
 endif()
 
-add_definitions( -D_TEST )
+add_definitions(
+  -DTEST
+  )
 
 include_directories(
   ..
-)
+  )
 
 add_subdirectory( notests   )
 
@@ -108,9 +108,9 @@ add_subdirectory( good      )
 
 valgrind(
   TARGETS
-    # bad
-    # bailout
-    # exception
-    good
-    notests
-)
+  # bad
+  # bailout
+  # exception
+  good
+  notests
+  )

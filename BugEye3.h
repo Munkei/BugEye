@@ -1,15 +1,16 @@
 /* -*- C++ -*- */
 
-// Copyright Theo Willows 2015-2016.
+// Copyright Theo Willows 2015–2017.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#pragma once
+#ifndef BUGEYE3_H
+#define BUGEYE3_H
 
 #include <string>
 
-#ifdef _TEST
+#if defined(TEST) || defined(_TEST)
 
 #  include <algorithm>
 #  include <climits>
@@ -27,9 +28,9 @@
 #  include <sstream>
 #  include <stack>
 #  include <type_traits>
-#  include <vector>
 #  include <unordered_set>
 #  include <utility>
+#  include <vector>
 
 #  ifdef _MSC_VER
 #    define BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
@@ -67,15 +68,15 @@ namespace bugeye {
 
     public:
 
-      const std::string                 description;
+      const std::string description;
 
-      directive_t                       directive;
+      directive_t directive;
 
-      std::string                       directive_reason;
+      std::string directive_reason;
 
       const std::shared_ptr<location_t> location;
 
-      size_t                            number;
+      size_t number;
 
       assertion(
         const bool                                 ok_,
@@ -170,9 +171,8 @@ namespace bugeye {
 
     public:
 
-      template<typename body_t>
-      impl(const test&   test_,
-           const body_t& body);
+      template<typename body_t> impl(const test&   test_,
+                                     const body_t& body);
 
       impl(const impl& other) = delete;
 
@@ -292,7 +292,7 @@ namespace bugeye {
       std::stack<std::pair<const directive_t,
                            const std::string> > directives;
 
-      end_result_t                              end_result;
+      end_result_t end_result;
 
       explicit execution(const test::impl& test);
 
@@ -375,7 +375,7 @@ namespace bugeye {
         template<typename U>
         static auto test(int)->decltype(
           std::declval<std::ostream&>() << std::declval<U>(),
-          std::true_type()
+            std::true_type()
         );
 
         template<typename>
@@ -753,7 +753,7 @@ inline void bugeye::test::execution::push(assertion ar) {
   execution& e = current().top();
 
   if (!e.directives.empty() ) {
-    auto && cd          = e.directives.top();
+    auto&& cd = e.directives.top();
     ar.directive        = cd.first;
     ar.directive_reason = cd.second;
   }
@@ -781,7 +781,8 @@ inline bool bugeye::test::execution::run_all(int          argc,
     std::map<
       std::set<std::string>,
       std::function<void (std::function<std::string()> )>
-    > options_t;
+    >
+    options_t;
 
   std::unordered_set<std::string> explicit_tests;
   bool                            case_sensitive = true;
@@ -831,6 +832,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
 
   for (int i = 1; i < argc; ++i) {
     const std::string arg(argv[i]);
+
     if (arg == "--") {
       for (++i; i < argc; ++i) {
         explicit_tests.emplace(argv[i]);
@@ -852,7 +854,7 @@ inline bool bugeye::test::execution::run_all(int          argc,
           } else {
             std::string value = arg.substr(j + 1);
             j = arg.size();
-            return std::move(value);
+            return value;
           }
         });
       }
@@ -1049,8 +1051,8 @@ inline bool bugeye::test::execution::isnt_(
   va_end(args);
 
   if (!ok) {
-    diag_("Got:        %s", stringify(got).c_str() );
-    diag_("Unexpected: %s", stringify(unexpected).c_str() );
+    diag_("Got:        %s", bugeye::util::stringify(got).c_str() );
+    diag_("Unexpected: %s", bugeye::util::stringify(unexpected).c_str() );
   }
 
   return ok;
@@ -1138,6 +1140,7 @@ inline bool bugeye::test::execution::run() {
   } catch (const bail_out_exception& e) {
     std::cout << indentation << bugeye::util::ansi("31", "Bail out!");
     std::string message(e.what() );
+
     if (!message.empty() ) {
       std::cout << " " << message;
     }
@@ -1217,7 +1220,17 @@ inline bugeye::test& bugeye::test::operator=(T body) {
   }
 
   tests().emplace(*this, body);
+
+  // GCC's `-Weffc++` doesn't seem to understand the `return *this` below. :(
+#  ifdef __GNUC__
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Weffc++"
+#  endif
   return *this;
+
+#  ifdef __GNUC__
+#    pragma GCC diagnostic pop
+#  endif
 } // =
 
 inline bugeye::test& bugeye::test::plan(size_t p) {
@@ -1261,8 +1274,18 @@ inline const bugeye::subtest& bugeye::subtest::operator=(const T& body) {
   _body = body;
   bool ok = test::execution::run(*this);
   test::execution::push(assertion(ok, name) );
+
+  // GCC's `-Weffc++` doesn't seem to understand the `return *this` below. :(
+#  ifdef __GNUC__
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Weffc++"
+#  endif
   return *this;
-}
+
+#  ifdef __GNUC__
+#    pragma GCC diagnostic pop
+#  endif
+} // =
 
 inline bugeye::subtest& bugeye::subtest::plan(size_t p) {
   _plan.reset(new size_t(p) );
@@ -1297,6 +1320,7 @@ inline std::string bugeye::util::stringifier::iterate<value_t >::operator()(
 ) const {
   const auto         end = std::end(value);
   auto               it  = std::begin(value);
+
   std::ostringstream oss;
 
   oss << "[ ";
@@ -1307,7 +1331,7 @@ inline std::string bugeye::util::stringifier::iterate<value_t >::operator()(
     }
   }
   oss << " ]";
-  return std::move(oss.str() );
+  return oss.str();
 } // bugeye::util::stringifier::iterate<value_t>::operator()
 
 template<typename value_t>
@@ -1321,7 +1345,7 @@ inline std::string bugeye::util::stringifier::pointer<value_t >::operator()(
       << std::setfill('0')
       << std::setw(sizeof(uintptr_t) * (CHAR_BIT / 4) )
       << reinterpret_cast<const uintptr_t>(value);
-  return std::move(oss.str() );
+  return oss.str();
 }
 
 template<typename value_t>
@@ -1349,7 +1373,7 @@ inline std::string bugeye::util::stringifier::stream<value_t >::operator()(
   value_t2           value2 = value;
 
   oss << std::boolalpha << value2;
-  return std::move(oss.str() );
+  return oss.str();
 } // bugeye::util::stringifier::stream<value_t>::operator()
 
 template<typename value_t>
@@ -1361,7 +1385,7 @@ inline std::string bugeye::util::stringifier::tuple<value_t >::operator()(
   oss << "{ ";
   each<0>(oss, value);
   oss << " }";
-  return std::move(oss.str() );
+  return oss.str();
 }
 
 template<typename value_t>
@@ -1456,7 +1480,7 @@ inline std::string bugeye::util::vstringf(BUGEYE_FORMAT const char* format,
 
   std::vsnprintf(buffer.data(), size_t(size), format, args);
 
-  return std::move(std::string(buffer.data() ) );
+  return std::string(buffer.data() );
 } // bugeye::util::vstringf
 
 // bugeye
@@ -1488,45 +1512,45 @@ inline void bugeye::run(int          argc,
 #  define BUGEYE_CONCAT_(a, b) a##b
 #  define BUGEYE_CONCAT(a, b)  BUGEYE_CONCAT_(a, b)
 
-#  define ok(...)                             \
+#  define OK(...)                             \
   ::bugeye::test::execution::ok_(             \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#  define is(...)                             \
+#  define IS(...)                             \
   ::bugeye::test::execution::is_(             \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#  define isnt(...)                           \
+#  define ISNT(...)                           \
   ::bugeye::test::execution::isnt_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#  define pass(...)                           \
+#  define PASS(...)                           \
   ::bugeye::test::execution::pass_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#  define fail(...)                           \
+#  define FAIL(...)                           \
   ::bugeye::test::execution::fail_(           \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#  define diag(...) \
+#  define DIAG(...) \
   ::bugeye::test::execution::diag_(__VA_ARGS__)
 
-#  define todo(...)                                                            \
+#  define TODO(...)                                                            \
   for (bool _bugeye_todo = ::bugeye::test::execution::todo_start(__VA_ARGS__); \
        _bugeye_todo;                                                           \
        _bugeye_todo = ::bugeye::test::execution::todo_stop() )
 
-#  define skip(CONDITION, ...)                  \
+#  define SKIP(CONDITION, ...)                  \
   if (CONDITION) {                              \
     ::bugeye::test::execution::skip_(           \
       ::bugeye::location_t(__FILE__, __LINE__), \
@@ -1535,67 +1559,109 @@ inline void bugeye::run(int          argc,
   }                                             \
   else
 
-#  define bail_out(...)                       \
+#  define BAIL_OUT(...)                       \
   ::bugeye::test::execution::bail_out_(       \
     ::bugeye::location_t(__FILE__, __LINE__), \
     __VA_ARGS__                               \
   )
 
-#else // ifdef _TEST
+#else // if defined(TEST) || defined(_TEST)
 
 namespace bugeye {
 
   struct test final {
 
-    explicit test(const std::string&) {}
+    explicit test(const std::string&);
 
-    test& plan(size_t) {
-      return *this;
-    }
+    test& plan(size_t);
 
     template<typename T>
-    test& operator=(T) {
-      return *this;
-    }
+    test& operator=(T);
+
+    test& operator=(const test& other) = delete;
 
   };
 
   struct subtest final {
 
-    explicit subtest(const std::string&) {}
+    explicit subtest(const std::string&);
 
-    subtest& plan(size_t) {
-      return *this;
-    }
+    subtest& plan(size_t);
 
     template<typename T>
-    subtest& operator=(T) {
-      return *this;
-    }
+    subtest& operator=(T);
+
+    subtest& operator=(const test& other) = delete;
 
   };
 
   void run(int = 0,
            char const** = nullptr);
 
-  template<typename... args>
-  void unused(args...) {}
+  template<typename... args_t>
+  void unused(args_t...);
 
 } // namespace bugeye
 
+inline bugeye::test::test(const std::string&) {}
+
+inline bugeye::test& bugeye::test::plan(size_t) {
+  return *this;
+}
+
+// GCC's `-Weffc++` doesn't seem to understand the `return *this`s below. :(
+#  ifdef __GNUC__
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Weffc++"
+#  endif
+
+template<typename T>
+inline bugeye::test& bugeye::test::operator=(T) {
+  return *this;
+}
+
+inline bugeye::subtest::subtest(const std::string&) {}
+
+inline bugeye::subtest& bugeye::subtest::plan(size_t) {
+  return *this;
+}
+
+template<typename T>
+inline bugeye::subtest& bugeye::subtest::operator=(T) {
+  return *this;
+}
+
+#  ifdef __GNUC__
+#    pragma GCC diagnostic pop
+#  endif
+
 inline void bugeye::run(int, char const**) {}
 
-#  define BUGEYE_UNUSED(...) \
-  { ::bugeye::unused(__VA_ARGS__); }
+template<typename... args_t>
+inline void bugeye::unused(args_t...) {}
 
-#  define ok(...)       BUGEYE_UNUSED(__VA_ARGS__)
-#  define is(...)       BUGEYE_UNUSED(__VA_ARGS__)
-#  define isnt(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define diag(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define pass(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define fail(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define skip(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define todo(...)     BUGEYE_UNUSED(__VA_ARGS__)
-#  define bail_out(...) BUGEYE_UNUSED(__VA_ARGS__)
+#  define OK(...)       { ::bugeye::unused(__VA_ARGS__); }
+#  define IS(...)       { ::bugeye::unused(__VA_ARGS__); }
+#  define ISNT(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define DIAG(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define PASS(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define FAIL(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define SKIP(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define TODO(...)     { ::bugeye::unused(__VA_ARGS__); }
+#  define BAIL_OUT(...) { ::bugeye::unused(__VA_ARGS__); }
 
-#endif // ifdef _TEST
+#endif // if defined(TEST) || defined(_TEST)
+
+#if defined(BUGEYE_LOWERCASE) && BUGEYE_LOWERCASE
+#  define bail_out BAIL_OUT
+#  define diag     DIAG
+#  define fail     FAIL
+#  define is       IS
+#  define isnt     ISNT
+#  define ok       OK
+#  define pass     PASS
+#  define skip     SKIP
+#  define todo     TODO
+#endif
+
+#endif // ifndef BUGEYE3_H
