@@ -6,16 +6,16 @@
 #include <BugEye3.h>
 
 static auto t = bugeye::test("Failures").plan(5) = [] {
-  ok(1 > 2, "is 1 > 2?");
+  OK(1 > 2, "is 1 > 2?");
 
-  is( (1 + 1), 3, "is (1 + 1) 3?");
+  IS( (1 + 1), 3, "is (1 + 1) 3?");
 
-  is(std::string("foo"), "bar", "\"foo\" is \"bar\"");
+  IS(std::string("foo"), "bar", "\"foo\" is \"bar\"");
 
-  fail("fail");
+  FAIL("fail");
 
   bugeye::subtest("subtest") = [] {
-    ok(false);
-    is(1, 2);
+    OK(false);
+    IS(1, 2);
   };
 };

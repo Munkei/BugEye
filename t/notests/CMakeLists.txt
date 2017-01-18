@@ -1,4 +1,4 @@
-remove_definitions( -D_TEST )
+remove_definitions( -DTEST )
 
 add_executable( notests
   ../bad/failures.cpp
@@ -10,15 +10,15 @@ add_executable( notests
   ../good/good.cpp
   ../good/goodnoplan.cpp
   ../main.cpp
-)
+  )
 
 add_test(
   NAME    notests
   COMMAND notests
-)
+  )
 
 set_tests_properties( notests
   PROPERTIES PASS_REGULAR_EXPRESSION "This is the code that runs when we're not testing"
-)
+  )
 
 coverage_target( notests )

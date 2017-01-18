@@ -6,5 +6,5 @@
 #include <BugEye3.h>
 
 static auto t = bugeye::test("Good No Plan") = [] {
-  ok(true, "ok (true)");
+  OK(true, "ok (true)");
 };

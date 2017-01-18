@@ -1,6 +1,6 @@
 # BugEye Manual #
 
-**Copyright © Theo Willows 2016**
+Copyright © Theo Willows 2016–2017
 
 This document describes how to *use* the BugEye C++ unit testing framework. If
 you're looking for information on how to get it, how it is licensed, etc. please
@@ -102,25 +102,25 @@ arguments. This is the message that shows up in the [Output] together with the
 result of the test. The format and it's arguments work like the `printf()`
 family of functions. See the [`std::printf` documentation] for details.
 
-#### `ok(expression[, format, args...])` ####
+#### `OK(expression[, format, args...])` ####
 
 Checks that `expression` is true.
 
-#### `is(got, expected[, format, args...])` ####
+#### `IS(got, expected[, format, args...])` ####
 
 Checks that `got` and `expected` are equal (using `==`). If they are not, their
 values will show up in the [Output] for you to inspect (using magic
 stringification techniques).
 
-#### `isnt(got, unexpected[, format, args...])` ####
+#### `ISNT(got, unexpected[, format, args...])` ####
 
-The opposite of `is()`.
+The opposite of `IS()`.
 
-#### `pass([format, args...])` ####
+#### `PASS([format, args...])` ####
 
 Simply create a good assertion.
 
-#### `fail([format, args...])` ####
+#### `FAIL([format, args...])` ####
 
 Simply create a bad assertion. Great for use in a `catch` block.
 
@@ -129,11 +129,11 @@ Simply create a bad assertion. Great for use in a `catch` block.
 These are commands that control test results and [Output], but aren't really
 assertions.
 
-#### `diag(format, args...)` ####
+#### `DIAG(format, args...)` ####
 
 Print (log) a diagnostic message. Doesn't affect test results.
 
-#### `skip(condition, count, format, args...) { ... }` ####
+#### `SKIP(condition, count, format, args...) { ... }` ####
 
 Sometimes, you might want to skip some assertions. Perhaps under certain
 circumstances, such as a missing resource.
@@ -148,14 +148,14 @@ considered successful, and be marked with `skip`.
 ```cpp
 auto file = get_test_data();
 
-skip(!file.exists(), 42, "No test data (%s)", file.name.c_str() ) {
+SKIP(!file.exists(), 42, "No test data (%s)", file.name.c_str() ) {
   // Test code that may not run
 }
 ```
 
-#### `todo(format, args...) { ... }` ####
+#### `TODO(format, args...) { ... }` ####
 
-A bit like `skip(){}`, but the contents will *always* be executed. Failed
+A bit like `SKIP(){}`, but the contents will *always* be executed. Failed
 [Assertions] will still appear as failures in the [Output], but won't be counted
 in the total number of failures, and won't make their parent fail.
 
@@ -163,7 +163,7 @@ Great for when you are testing things that are not yet complete, but you still
 want to have the tests in place early.
 
 ```cpp
-todo("The thingamajig is still under development") {
+TODO("The thingamajig is still under development") {
   // Tests for the thingamajig
 }
 ```
@@ -171,16 +171,16 @@ todo("The thingamajig is still under development") {
 `format` and its `args...` are for describing the reason the contained block is
 not yet done.
 
-#### `bail_out(format, args...)` ####
+#### `BAIL_OUT(format, args...)` ####
 
-Sometimes all we can do is give up. `bail_out()` will stop all testing
+Sometimes all we can do is give up. `BAIL_OUT()` will stop all testing
 immediately (no `return` necessary) and fail the whole process.
 
 ```cpp
 auto our_library = dlopen("our_library.so", RTLD_LAZY);
 
 if (our_library == nullptr) {
-  bail_out("Failed to load our library! Can't test anything now!");
+  BAIL_OUT("Failed to load our library! Can't test anything now!");
 }
 ```
 
@@ -211,17 +211,17 @@ your code will run as normal.
 
 ## Compiling ##
 
-You can compile your code with or without [Tests]: If `_TEST` is defined, then
+You can compile your code with or without [Tests]: If `TEST` is defined, then
 `bugeye::run()` will run the tests. If it is not defined, then `bugeye::run()`
 won't do anything, and all the test code goes unused (and your compiler should
 optimise it away).
 
 There are two things worth noting: Firstly, there is no need to wrap test code
-in `#ifdef _TEST`. The BugEye API will take care of all of that for you. You
+in `#ifdef TEST`. The BugEye API will take care of all of that for you. You
 *can* still wrap things, but beware of making your test code diverge too much
 from your production code.
 
-Secondly, even if test code goes unused without `_TEST`, it still needs to be
+Secondly, even if test code goes unused without `TEST`, it still needs to be
 valid code. It does get compiled, just not used anywhere. Like it or not, at
 least it has the benefit of catching errors in test code early.
 
@@ -321,11 +321,11 @@ This is the file containing `main()`.
 
 int main(int         argc,
          char const* argv[]) {
-  // Run the tests, *if* `_TEST` is defined
+  // Run the tests, *if* `TEST` is defined
   bugeye::run(argc, argv);
   // The above will `exit()`, so the code below won't run
 
-  // If `_TEST` *isn't* defined, the ordinary contents of `main()` will run
+  // If `TEST` *isn't* defined, the ordinary contents of `main()` will run
   std::clog << "This is the code that runs when we're not testing" << std::endl;
 }
 ```
@@ -345,43 +345,43 @@ This is the test file for the `foo` class.
 // then the test will be considered a failure.
 static auto test = bugeye::test("Tests for foo").plan(5) = [] {
 
-  // The simplest assertion is `ok()`. It tests that something is truthy.
-  ok(foo::bar(), "The static method `bar()` returns `true`");
+  // The simplest assertion is `OK()`. It tests that something is truthy.
+  OK(foo::bar(), "The static method `bar()` returns `true`");
 
   foo f{42};
 
-  // An other assertion is `is()`. It tests that two values are equal (it uses
+  // An other assertion is `IS()`. It tests that two values are equal (it uses
   // `==` internally). If they are not, then the test output will display both
   // values for you to inspect.
-  is(f.bar, 42, "`bar`'s value came from the constructor");
+  IS(f.bar, 42, "`bar`'s value came from the constructor");
 
-  is(f.baz, 'x', "`baz`'s value is the default");
+  IS(f.baz, 'x', "`baz`'s value is the default");
 
   const char* name = f.name();
 
   if (name == nullptr) {
     // If something went so wrong there's no point in continuing the test, you
-    // can `bail_out()`, with an optional message. This will stop all tests and
+    // can `BAIL_OUT()`, with an optional message. This will stop all tests and
     // counts as a failure.
-    bail_out("`name()` returned null");
+    BAIL_OUT("`name()` returned null");
   }
 
-  // `diag()` isn't really an assertion, it just logs a message in the test
+  // `DIAG()` isn't really an assertion, it just logs a message in the test
   // output.
-  diag("Name = ‘%s’", name);
+  DIAG("Name = ‘%s’", name);
 
   std::string name_str{name};
 
-  // There's also `isnt()`; the opposite of `is()`
-  isnt(name_str, "UNKNOWN", "The name isn't ‘UNKNOWN’");
+  // There's also `ISNT()`; the opposite of `IS()`
+  ISNT(name_str, "UNKNOWN", "The name isn't ‘UNKNOWN’");
 
   try {
     f.calculate(2, 3.1415);
-    // `pass()` is like an assertion that always passes.
-    pass("`calculate()` didn't throw");
+    // `PASS()` is like an assertion that always passes.
+    PASS("`calculate()` didn't throw");
   } catch (const foo::calculation_error& e) {
-    // `fail()` is the opposite of `pass()`.
-    fail("`calculate()` threw: %s", e.what() );
+    // `FAIL()` is the opposite of `PASS()`.
+    FAIL("`calculate()` threw: %s", e.what() );
   }
 
   // There's no need to catch `...` above: Any uncaught exception will result in
@@ -407,16 +407,16 @@ static auto test = bugeye::test("Misc.").plan(2) = [] {
   // plan.
   bugeye::subtest("Number stuff") = [] {
 
-    is(fibonacci(13), 144, "The 13th Fibonacci number is 144");
+    IS(fibonacci(13), 144, "The 13th Fibonacci number is 144");
 
   };
 
   // This is another sub-test.
   bugeye::subtest("String stuff").plan(3) = [] {
 
-    is(trim(" foo"), "foo");
-    is(trim("foo "), "foo");
-    is(trim(" foo "), "foo");
+    IS(trim(" foo"), "foo");
+    IS(trim("foo "), "foo");
+    IS(trim(" foo "), "foo");
 
   };
 
