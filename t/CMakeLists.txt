@@ -82,7 +82,6 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
     /D_UNICODE
-    /D_USE_ATTRIBUTES_FOR_SAL=1
     /DUNICODE
     )
 else()
