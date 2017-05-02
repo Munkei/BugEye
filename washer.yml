@@ -54,6 +54,8 @@ tools:
       - 'text/x-c++src'
       - 'text/x-chdr'
       - 'text/x-csrc'
+    options:
+      config: '.uncrustify.cfg'
 
   TrailingWhitespace:
     type: TrailingWhitespace
