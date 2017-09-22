@@ -79,7 +79,7 @@ static auto t2 = bugeye::test("Self").plan(1) = [] {
 
     IS(bugeye::util::stringify(1.2f), "1.2", "float");
     IS(bugeye::util::stringify(1.2), "1.2", "double");
-    IS(bugeye::util::stringify<long double>(1.2), "1.2", "long double");
+    IS(bugeye::util::stringify(1.2l), "1.2", "long double");
 
     IS(bugeye::util::stringify(true), "true", "bool");
 
