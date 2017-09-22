@@ -4,19 +4,16 @@ include( MunkeiAddCompileFlags )
 include( MunkeiValgrind        )
 
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
+
   add_compile_flags(
     REQUIRED
     # LOG YES
-    -g
-    -pedantic
-    -pedantic-errors
     -Wall
     -Wcast-align
     -Wcast-qual
     -Wctor-dtor-privacy
     -Werror
     -Wextra
-    # -Wfatal-errors
     -Wfloat-equal
     -Wformat=2
     -Winit-self
@@ -34,24 +31,39 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wstrict-overflow=5
     -Wswitch-default
     -Wundef
+    -g
+    -pedantic
+    -pedantic-errors
     )
 
   add_compile_flags(
     # LOG YES
-    -fdiagnostics-color=always
     -Qunused-arguments
+    -Wconversion
     -Wcovered-switch-default
     -Wdisabled-macro-expansion
     -Wdouble-promotion
+    -Wduplicated-branches
+    -Wduplicated-cond
     -Weffc++
+    -Weverything
     -Wformat-signedness
     -Wgcc-compat
+    -Wjump-misses-init
     -Wlogical-op
     -Wmissing-noreturn
     -Wno-c++98-compat-pedantic
+    -Wno-exit-time-destructors
     -Wno-format-nonliteral
+    -Wno-global-constructors
+    -Wno-padded
+    -Wno-weak-vtables
     -Wnoexcept
+    -Wnull-dereference
+    -Wold-style-cast
     -Wreserved-id-macro
+    -Wrestrict
+    -Wshadow
     -Wstrict-null-sentinel
     -Wsuggest-attribute=const
     -Wsuggest-attribute=format
@@ -60,11 +72,15 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU" )
     -Wsuggest-final-methods
     -Wsuggest-final-types
     -Wsuggest-override
+    -Wswitch
     -Wswitch-enum
     -Wuseless-cast
     -Wzero-as-null-pointer-constant
+    -fdiagnostics-color=always
     )
+
 elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+
   add_compile_flags(
     # Displays the full path of source code files
     /FC
@@ -74,20 +90,24 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     # Builds multiple source files concurrently.
     /MP
     /Od
-    /W4
+    /Wall
     /WX
     # Generates complete debugging information.
     /Zi
     )
+
   add_definitions(
     /D_CRT_SECURE_NO_WARNINGS
     /D_UNICODE
     /DUNICODE
     )
+
 else()
+
   message( WARNING
     "Using an unsupported compiler (${CMAKE_CXX_COMPILER_ID}). Good luck!"
     )
+
 endif()
 
 add_definitions(
