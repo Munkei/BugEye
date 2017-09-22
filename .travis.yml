@@ -131,10 +131,10 @@ matrix:
       env:
         - MATRIX_EVAL="brew install gcc5 && CC=gcc-5 && CXX=g++-5"
 
-    - os: osx
-      osx_image: xcode8
-      env:
-        - MATRIX_EVAL="brew install gcc6 && CC=gcc-6 && CXX=g++-6"
+    # - os: osx
+    #   osx_image: xcode8
+    #   env:
+    #     - MATRIX_EVAL="brew install gcc6 && CC=gcc-6 && CXX=g++-6"
 
     # - os: osx
     #   osx_image: xcode8
