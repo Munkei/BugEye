@@ -90,7 +90,20 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     # Builds multiple source files concurrently.
     /MP
     /Od
-    /Wall
+    /W4
+    /W44061
+    /W44062
+    /W44263
+    /W44264
+    /W44266
+    /W44296
+    /W44545
+    /W44546
+    /W44547
+    /W44548
+    /W44549
+    /W44574
+    /W44668
     /WX
     # Generates complete debugging information.
     /Zi
