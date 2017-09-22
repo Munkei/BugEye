@@ -8,9 +8,21 @@
 #ifndef BUGEYE3_H
 #define BUGEYE3_H
 
+#ifdef _MSC_VER
+#  pragma warning(push, 0)
+#endif
+
 #include <string>
 
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif
+
 #if defined(TEST) || defined(_TEST)
+
+#  ifdef _MSC_VER
+#    pragma warning(push, 0)
+#  endif
 
 #  include <algorithm>
 #  include <climits>
@@ -33,6 +45,7 @@
 #  include <vector>
 
 #  ifdef _MSC_VER
+#    pragma warning(pop)
 #    define BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
 #  else
 #    define BUGEYE_FORMAT
@@ -354,7 +367,7 @@ namespace bugeye {
                  >()
                  // Older versions of Clang complain about ‘inequality
                  // comparison result unused’ witout the following line 😒
-                 ? 0 : 0),
+                 ? 0 : 1),
           std::true_type()
         );
 
