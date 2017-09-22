@@ -91,22 +91,22 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     /MP
     /Od
     /W4
-    /W44061
-    /W44062
-    /W44263
-    /W44264
-    /W44266
-    /W44296
-    /W44545
-    /W44546
-    /W44547
-    /W44548
-    /W44549
-    /W44574
-    /W44668
     /WX
     # Generates complete debugging information.
     /Zi
+    /w44061
+    /w44062
+    /w44263
+    /w44264
+    /w44266
+    /w44296
+    /w44545
+    /w44546
+    /w44547
+    /w44548
+    /w44549
+    /w44574
+    /w44668
     )
 
   add_definitions(
