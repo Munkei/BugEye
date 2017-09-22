@@ -53,8 +53,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
+            - ubuntu-toolchain-r-test
           packages:
             - clang-3.6
             - g++-4.9
@@ -65,8 +65,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
+            - ubuntu-toolchain-r-test
           packages:
             - clang-3.7
             - g++-4.9
@@ -77,8 +77,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.8
+            - ubuntu-toolchain-r-test
           packages:
             - clang-3.8
             - g++-4.9
@@ -90,6 +90,7 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-trusty-3.9
+            - ubuntu-toolchain-r-test
           packages:
             - clang-3.9
             - g++-4.9
@@ -101,6 +102,7 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-trusty-4.0
+            - ubuntu-toolchain-r-test
           packages:
             - clang-4.0
             - g++-4.9
@@ -112,6 +114,7 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-trusty-5.0
+            - ubuntu-toolchain-r-test
           packages:
             - clang-5.0
             - g++-4.9
