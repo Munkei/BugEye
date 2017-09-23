@@ -6,7 +6,7 @@
 
 ---
 
-Copyright © Theo Willows 2013–2017
+Copyright © Theo Willows 2013-2017
 
 Distributed under the Boost Software License, Version 1.0. (See accompanying
 file `LICENSE.md` or copy at
@@ -41,6 +41,21 @@ For more information see [BugEye's GitHub page].
 
 3.  Follow the documentation and examples in the [Manual].
 
+### Requirements ###
+
+BugEye is supposed to strictly follow the C++11 standard. So a compiler that
+supports C++11 is all you should need.
+
+It is continuously tested (big thanks to [Travis CI] and [AppVeyor]) with various
+versions of the following compilers:
+
+*   [Clang]
+*   [GCC]
+*   [Microsoft Visual C++]
+
+If you use some other compiler and find that BugEye doesn't work with it, please
+report it as a bug (see below).
+
 ## Bugs ##
 
 If you find a bug, please look for it among the [issues], and if it isn't
@@ -57,9 +72,11 @@ already reported, please report it.
 
 ---
 
-  [`Test::More`]: https://metacpan.org/module/Test::More
+  [AppVeyor]: https://ci.appveyor.com/project/biffen/bugeye
 
-  [`Test::Simple`]: https://metacpan.org/module/Test::Simple
+  [Clang]: https://clang.llvm.org
+
+  [GCC]: https://gcc.gnu.org/
 
   [BugEye's GitHub page]: https://github.com/Munkei/BugEye
 
@@ -67,8 +84,20 @@ already reported, please report it.
 
   [manual]: MANUAL.md
 
+  [Microsoft Visual C++]: https://docs.microsoft.com/en-gb/cpp
+
   [prove]: http://perldoc.perl.org/prove.html
 
-  [TAP's homepage]: http://testanything.org
+  [TAP's homepage]: https://testanything.org
+
+  [`Test::More`]: https://metacpan.org/module/Test::More
+
+  [`Test::Simple`]: https://metacpan.org/module/Test::Simple
 
   [The Wikipedia page on TAP]: https://en.wikipedia.org/wiki/Test_Anything_Protocol
+
+  [Travis CI]: https://travis-ci.org/Munkei/BugEye
+
+<!--
+LocalWords:  AppVeyor BugEye BugEye's TAP's md
+-->
