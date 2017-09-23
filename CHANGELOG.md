@@ -1,4 +1,4 @@
-# BugeEye Changelog #
+# BugEye Changelog #
 
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning], and this file to [Keep a CHANGELOG].
@@ -15,6 +15,17 @@ project adheres to [Semantic Versioning], and this file to [Keep a CHANGELOG].
 
 *   The preprocessor variable for enabling testing is now `TEST`. The old one,
     `_TEST`, will still work, but its use is discouraged.
+
+### Fixed ###
+
+*   BugEye now passes even more compiler warnings.
+
+*   Invalid regexes (used with `-r`) now cause a ‘proper’ error
+
+*   The `MANUAL.md` mistakenly listed the short version of `--case-insensitive`
+    as `-c`. It’s been fixed to `-i`.
+
+*   A section on requirements has been added to the `README.md`.
 
 ## [3.0.1] - 2016-05-16 ##
 
@@ -49,15 +60,15 @@ hackery.
 
 ### Fixed ###
 
-*   Bailouts and uncaught exceptions sometimes weren't counted as failures,
+*   Bailouts and uncaught exceptions sometimes weren’t counted as failures,
     which could lead to false positives. They will now *always* lead to a
     non-zero exit.
 
-*   ‘Consumed’ objects during stringification has been fixed.  Stringification
-    now works somewhat differently. It's dumber, but less dangerous. Expect it
+*   ‘Consumed’ objects during stringification has been fixed. Stringification
+    now works somewhat differently. It’s dumber, but less dangerous. Expect it
     to be better in a minor release in the near future.
 
-*   A lot of compiler warnings have been fixed.  (BugEye now builds with even
+*   A lot of compiler warnings have been fixed. (BugEye now builds with even
     stricter settings.)
 
 ## [2.0.0] - 2013-12-14 ##
@@ -89,3 +100,9 @@ Initial version.
   [Keep a CHANGELOG]: http://keepachangelog.com
 
   [Semantic Versioning]: http://semver.org
+
+<!--
+LocalWords: BUGEYE BugEye Changelog README Stringification TODO Wcovered
+LocalWords: Wdisabled Weffc Wgcc Wmissing Wreserved Wswitch compat enum hackery
+LocalWords: md noreturn preprocessor printf regexes stringification truthy
+-->
