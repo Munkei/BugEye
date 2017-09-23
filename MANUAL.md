@@ -265,7 +265,7 @@ Note also that the regex implementation is the one supplied by the C++ standard
 library you use. Some (older) implementations are known to have poor regex
 support.
 
-#### `--case-insensitive`, `-c` ####
+#### `--case-insensitive`, `-i` ####
 
 When naming tests, or using `regex`, don't care about case.
 
@@ -489,3 +489,10 @@ whole process fail and exit non-zero.
   [Test]: #tests
 
   [Tests]: #tests
+
+<!--
+LocalWords: BugEye BugEye's DIAG ISNT README RTLD STDERR STDOUT TODO argc args
+LocalWords: argv baz bugeye const cpp dlopen fibonacci fo ifdef iostream md
+LocalWords: nullptr ok preprocessor printf runtime str stringification subtest
+LocalWords: truthy
+-->
