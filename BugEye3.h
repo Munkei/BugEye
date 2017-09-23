@@ -950,9 +950,15 @@ inline bool bugeye::test::execution::run_all(int          argc,
           : std::regex::ECMAScript | std::regex::icase;
       bool matched = false;
       for (const auto& test : tests() ) {
-        if (std::regex_match(test.name, std::regex(regex, regex_options) ) ) {
-          matched = true;
-          actual_tests.insert(test.name);
+        try {
+          if (std::regex_match(test.name, std::regex(regex, regex_options) ) ) {
+            matched = true;
+            actual_tests.insert(test.name);
+          }
+        } catch (const std::regex_error& e) {
+          throw bugeye::config_error(
+                  "Invalid regex ‘" + regex + "’: " + e.what()
+          );
         }
       }
       if (!matched
