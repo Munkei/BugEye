@@ -1,6 +1,6 @@
 /* -*- C++ -*- */
 
-// Copyright Theo Willows 2015–2017.
+// Copyright Theo Willows 2015-2017.
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.md or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -8,9 +8,21 @@
 #ifndef BUGEYE3_H
 #define BUGEYE3_H
 
+#ifdef _MSC_VER
+#  pragma warning(push, 0)
+#endif
+
 #include <string>
 
+#ifdef _MSC_VER
+#  pragma warning(pop)
+#endif
+
 #if defined(TEST) || defined(_TEST)
+
+#  ifdef _MSC_VER
+#    pragma warning(push, 0)
+#  endif
 
 #  include <algorithm>
 #  include <climits>
@@ -33,6 +45,7 @@
 #  include <vector>
 
 #  ifdef _MSC_VER
+#    pragma warning(pop)
 #    define BUGEYE_FORMAT _In_opt_z_ _Printf_format_string_
 #  else
 #    define BUGEYE_FORMAT
@@ -54,6 +67,8 @@ namespace bugeye {
 
     location_t(const std::string& file_,
                const size_t       line_);
+
+    location_t(const location_t& other)                     = default;
 
     location_t&          operator=(const location_t& other) = delete;
 
@@ -84,6 +99,8 @@ namespace bugeye {
         const std::shared_ptr<bugeye::location_t>& location_ = nullptr,
         const directive_t                          directive_ = directive_t::none
       );
+
+      assertion(const assertion& other) = default;
 
       bool                 ok() const;
 
@@ -341,16 +358,16 @@ namespace bugeye {
 
         template<typename U>
         static auto test(int)->decltype(
-          std::declval<
-            decltype(std::begin(std::declval<U>() ) )
-          >()
-          !=
-          std::declval<
-            decltype(std::end(std::declval<U>() ) )
-          >()
-          // Older versions of Clang complain about ‘inequality comparison
-          // result unused’ witout the following line 😒
-          ? 0 : 0,
+          (void)(std::declval<
+                   decltype(std::begin(std::declval<U>() ) )
+                 >()
+                 !=
+                 std::declval<
+                   decltype(std::end(std::declval<U>() ) )
+                 >()
+                 // Older versions of Clang complain about ‘inequality
+                 // comparison result unused’ witout the following line 😒
+                 ? 0 : 1),
           std::true_type()
         );
 
@@ -1572,6 +1589,10 @@ namespace bugeye {
   struct test final {
 
     explicit test(const std::string&);
+
+    test(const test& other) = default;
+
+    ~test()                 = default;
 
     test& plan(size_t);
 
